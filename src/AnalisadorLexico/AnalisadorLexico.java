@@ -40,7 +40,9 @@ public class AnalisadorLexico {
         
         /* TO DO LIST
         
-            Usar o arraylist para gerar o arquivo de saída do analisador
+            Usar o arraylist para gerar o arquivo de saída do analisador**
+            Arrumar () em uma linha
+            End.
         
         */
         
@@ -185,8 +187,57 @@ public class AnalisadorLexico {
             
     }
     
+    public Boolean isReservedWord(String token){
+        
+        for(int i = 0; i < file.size(); i++){
+            if(token.equalsIgnoreCase(reservedWords.get(i)))
+                return true;
+        }
+        return false;
+    }
+    
     private void classifier (String token, int line){
-      
+        
+        String regexInteger = "\\d+";
+        String regexReal = "\\d+\\.\\d*";
+        String identifier = "\\w+";
+        String result = "";
+        
+        if(token.isEmpty())
+            return;
+        
+        if(token.matches(regexInteger))
+            result = "Número inteiro	";
+        
+        else if(token.matches(regexReal))
+            result = "Número real	";
+        
+        else if(token.matches(identifier)){
+            if(isReservedWord(token))
+                result = "Palavra reservada";
+            else
+                result = "Identificador     ";
+            
+        }else if(token.equals("*") || token.equals("/") || token.equals("and"))
+            result = "Operador multiplicativo";
+        
+        else if (token.equals(":="))
+            result = "Atribuição	";
+        
+        else if (token.equals("+") || token.equals("-") || token.equals("or"))
+            result = "Operador aditivo";
+        else if(token.equals("<") || token.equals(">") || token.equals("=") ||
+                token.equals("<=") ||token.equals(">=") ||token.equals("<>"))
+            result = "Operador relacional";
+        else if(token.equals(":") ||token.equals(";") ||token.equals(".") ||
+                token.equals(",") ||token.equals("(") || token.equals(")"))
+            result = "Delimitador	";
+        else
+            return;
+        
+        table.add(new Table(token, result, line));
+        
+
     }
     
     private void analyzer(){
@@ -197,13 +248,14 @@ public class AnalisadorLexico {
                 
             Tokens = file.get(line).split(" ");
             for(int tok = 0; tok < Tokens.length; tok++){
-                System.out.println(Tokens[tok]);
-                classifier(Tokens[tok], tok);
+                //System.out.println(Tokens[tok]);
+                classifier(Tokens[tok], line + 1);
             }
      
         }
         
-        
+        for(int i = 0; i < table.size(); i++)
+            System.out.println(table.get(i).toString());
         
     }
     

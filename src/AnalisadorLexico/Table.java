@@ -18,7 +18,7 @@ public class Table {
     
     @Override
     public String toString(){        
-        return this.Token + "\t" + this.Classificacao + "\t" + this.Line + "\t";
+        return this.Token + "\t\t" + this.Classificacao + "\t" + this.Line + "\t\t";
     }
     
     
