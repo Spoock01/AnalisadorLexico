@@ -48,7 +48,7 @@ public class AnalisadorLexico {
         
     }
     
-    public int isSimbol(char c, char d){
+    public int isSymbol(char c, char d){
 
         if((c == ':' && d == '=') || (c  == '<' || d == '=') || 
            (c == '>' && d == '=') || (c == '<' && d == '>'))
@@ -78,7 +78,7 @@ public class AnalisadorLexico {
             
             for(int j = 0; j < (length - 1); j++){
                 
-                int desloc = isSimbol(aux.charAt(j), aux.charAt(j + 1));
+                int desloc = isSymbol(aux.charAt(j), aux.charAt(j + 1));
                 int size = 0;
                 
                 //System.out.println("Testando char '"+ aux.charAt(j) +"' e '" + aux.charAt(j + 1) + "'");
