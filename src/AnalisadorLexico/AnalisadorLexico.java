@@ -1,7 +1,6 @@
 package AnalisadorLexico;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 public class AnalisadorLexico {
     
@@ -41,8 +40,8 @@ public class AnalisadorLexico {
         /* TO DO LIST
         
             Usar o arraylist para gerar o arquivo de saída do analisador**
-            Arrumar () em uma linha
-            End.
+            \t
+            Identificador começando com numero
         
         */
         
@@ -76,7 +75,7 @@ public class AnalisadorLexico {
             String line = file.get(i);
             int length = line.length();
             String aux = line;
-           
+            
             for(int j = 0; j < (length - 1); j++){
                 
                 int desloc = isSimbol(aux.charAt(j), aux.charAt(j + 1));
@@ -98,7 +97,7 @@ public class AnalisadorLexico {
                         stringBuilder.insert(j + 1, ' ');
                         size++;
                     }
-                    if(aux.charAt(j-1) != ' '){
+                    if(aux.charAt(j-1 > 0? j - 1: 0) != ' '){
                         stringBuilder.insert(j, ' ');
                         size++;
                     }                       
@@ -117,7 +116,7 @@ public class AnalisadorLexico {
                     
                     stringBuilder = new StringBuilder(aux);
                    
-                    if(aux.charAt(j - 1) != ' '){
+                    if(aux.charAt(j - 1 > 0 ? j - 1 : 0) != ' '){
                         stringBuilder.insert(j , ' ');
                         size++;
                     }
@@ -175,6 +174,7 @@ public class AnalisadorLexico {
             }
             String result = String.valueOf(line);
             result = result.replace('¨', Character.MIN_VALUE);
+            result += " ";
             file.set(i, result);
  
         }
@@ -189,7 +189,7 @@ public class AnalisadorLexico {
     
     public Boolean isReservedWord(String token){
         
-        for(int i = 0; i < file.size(); i++){
+        for(int i = 0; i < reservedWords.size(); i++){
             if(token.equalsIgnoreCase(reservedWords.get(i)))
                 return true;
         }
