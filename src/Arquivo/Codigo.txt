@@ -4,4 +4,6 @@ valor1:integer;
 valor2:real;
 beg/in///
 valor1:=10;
+88ff88f
+ff8 882f
 end.

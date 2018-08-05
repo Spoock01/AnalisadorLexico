@@ -1,6 +1,7 @@
 package AnalisadorLexico;
 
 import java.util.ArrayList;
+import java.util.StringJoiner;
 
 public class AnalisadorLexico {
     
@@ -35,6 +36,7 @@ public class AnalisadorLexico {
         
         commentAnalyzer();
         codeAnalyzer();
+        identifierAnalyzer();
         analyzer();
         
         /* TO DO LIST
@@ -61,13 +63,16 @@ public class AnalisadorLexico {
             return 2;
         else if (c >= '0' && c <= '9')
             return 3;
+        else if(c == '+' || c == '-') // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            return 4;
+        
             
         
         
         return -1;
     }
     
-    public Boolean codeAnalyzer(){
+    public void codeAnalyzer(){
         
         /*String string = "abcdef";
         StringBuilder stringBuilder = new StringBuilder(string);
@@ -75,7 +80,6 @@ public class AnalisadorLexico {
         System.out.println(stringBuilder.toString());
         */
         StringBuilder stringBuilder;
-        Boolean var = false;
         
         for(int i = 0; i < file.size(); i++){
             
@@ -225,7 +229,6 @@ public class AnalisadorLexico {
             file.set(i, aux.trim());
      
         }
-        return var;
     }
     
     public Boolean isInvalid (char c){
@@ -239,6 +242,51 @@ public class AnalisadorLexico {
              
         
         return true;
+    }
+    
+    public void identifierAnalyzer() {
+        for (int line = 0; line < file.size(); line++){
+            
+            /*StringBuilder stringBuilder = new StringBuilder(string);
+            stringBuilder.insert(string.length() - 2, ',');
+            System.out.println(stringBuilder.toString());
+            */
+            
+            String[] Tokens;
+            String regex = "\\d+\\w+";
+            StringBuilder stringBuilder;
+                
+            Tokens = file.get(line).split(" ");
+            for(int tok = 0; tok < Tokens.length; tok++){
+                
+                String str = Tokens[tok];
+                stringBuilder = new StringBuilder(str);
+                
+                if(str.matches(regex)){
+                    System.out.println("DEu match: " + str);
+                    for(int i = 0; i < Tokens[tok].length(); i++){
+                        System.out.println("Testando o char: " + str.charAt(i));
+                        if(!(str.charAt(i) >= '0' && str.charAt(i) <= '9')){
+                            stringBuilder.insert(i, ' ');
+                            Tokens[tok] = stringBuilder.toString();
+                            System.out.println("Tudo ocorreu aqui: " + stringBuilder.toString());
+                            
+                            StringJoiner sj = new StringJoiner(" ");
+                            for(String s:Tokens) sj.add(s);
+                            file.set(line, sj.toString());
+                            line--;
+                            break;
+                        }
+                            
+                    }
+                    
+                    
+                }
+                
+                
+            }
+     
+        }
     }
     
     public void commentAnalyzer(){
