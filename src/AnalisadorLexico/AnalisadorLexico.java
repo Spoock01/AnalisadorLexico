@@ -42,26 +42,32 @@ public class AnalisadorLexico {
             Usar o arraylist para gerar o arquivo de saída do analisador**
             \t
             Identificador começando com numero
-            Retirar simbolos que n fazem parte da linguagem
+            +-
         */
         
         
     }
     
     public int isSymbol(char c, char d){
-
+        
         if((c == ':' && d == '=') || (c  == '<' || d == '=') || 
            (c == '>' && d == '=') || (c == '<' && d == '>'))
             return 1;
         
-        else if(c == ',' || c == ';' || c == '.' || c == ':' || c == '(' || c == ')')
+        else if(c == ',' || c == ';' || c == ':' || c == '(' || c == ')' ||
+                c == '/' || c == '*')
             return 0;
+        else if (c == '.')
+            return 2;
+        else if (c >= '0' && c <= '9')
+            return 3;
+            
         
         
         return -1;
     }
     
-    public void codeAnalyzer(){
+    public Boolean codeAnalyzer(){
         
         /*String string = "abcdef";
         StringBuilder stringBuilder = new StringBuilder(string);
@@ -69,6 +75,7 @@ public class AnalisadorLexico {
         System.out.println(stringBuilder.toString());
         */
         StringBuilder stringBuilder;
+        Boolean var = false;
         
         for(int i = 0; i < file.size(); i++){
             
@@ -78,6 +85,7 @@ public class AnalisadorLexico {
             
             for(int j = 0; j < (length - 1); j++){
                 
+                //System.out.println("Posicao: " + j + " Char na posicao: " + aux.charAt(j));
                 int desloc = isSymbol(aux.charAt(j), aux.charAt(j + 1));
                 int size = 0;
                 
@@ -129,25 +137,113 @@ public class AnalisadorLexico {
                     length = aux.length();
 
                 }
+                else if (desloc == 2){
+                    stringBuilder = new StringBuilder(aux);
+                    int jMenos1 = j - 1;
+                    
+                    /*
+                        Caso jMenos1 seja maior que zero, significa que o
+                        ponto não se encontra no inicio da linha
+                    */
+                    
+                    if(jMenos1 > 0){
+                        
+                        
+                        if(aux.charAt(jMenos1) >= '0' && aux.charAt(jMenos1) <= '9'){
+                            int help = jMenos1;
+
+                            /*
+                                Se for um digito, o laço irá voltar até o primeiro
+                                número e então colocará um espaço antes desse número
+                             */
+                            while(help >= 1 && aux.charAt(help) >= '0' && aux.charAt(help) <= '9'){
+                                help--;
+
+                            }
+   
+                            stringBuilder.insert(help == 0 ? 0 : help + 1 , ' ');
+                            size++;
+                            
+                            /*
+                                Seguindo a mesma ideia, procurará o ultimo numero
+                                (do numero real) e colocará um espaço no final
+                            */
+                            help = j + 1;
+                            while(aux.charAt(help) >= '0' && aux.charAt(help) <= '9')
+                                help++;
+                            
+                            stringBuilder.insert(help + 1 , ' ');
+                            size++;
+                            
+                        }
+                        /*
+                            Caso não seja um numero, apenas coloca um espaço antes
+                        */
+                        else if (aux.charAt(j - 1) <= '0' || aux.charAt(j - 1) >= '9'){
+                            stringBuilder.insert(j , ' ');
+                            size++;
+                        }
+                        /*
+                        
+                        */
+                        else{
+                            stringBuilder.insert(j + 1 , ' ');
+                            size++;
+                        }
+                        //System.out.println("RESULTADO DO PONTO: " +  stringBuilder.toString());
+                            
+                        aux = stringBuilder.toString();
+                        length = aux.length();
+                        
+                        
+                    }else{
+                        stringBuilder.insert(j + 1 , ' ');
+                        size++;
+                        aux = stringBuilder.toString();
+                        length = aux.length();
+                    }
+                }
                 j+= size;
 
             }
+            
+            /*
+                Caso o caractere final seja um ; (ponto e virgula)
+                então é inserido um espaço antes do ; para separar
+                do identificador.
+            */
+            
             if(aux.charAt(aux.length() - 1) == ';'){
                 stringBuilder = new StringBuilder(aux);
                 stringBuilder.insert(aux.length() - 1, ' ');
                 aux = stringBuilder.toString();
             }    
-            //System.out.println("Line: " + aux);
-            file.set(i, aux);
+            
+            /*
+                Retornando string modificada para o arraylist
+            */
+            file.set(i, aux.trim());
      
         }
-
+        return var;
+    }
+    
+    public Boolean isInvalid (char c){
+        
+        if((c >= 'A' && c <= 'Z') ||
+          (c >= 'a' && c <= 'z') ||
+          (c >= '0' && c <= '>') ||
+          (c >= '(' && c <= '/') ||
+          (c == '{' || c == '}' || c == ' '))
+                return false;
+             
+        
+        return true;
     }
     
     public void commentAnalyzer(){
         
         int open = 0;
-        int close = 0;
         
         for(int i = 0; i < file.size(); i++){
             
@@ -161,12 +257,23 @@ public class AnalisadorLexico {
                     open++;
                     this.isComment = true;
                 }
-         
+                
+                if(isInvalid(line[j]) && !this.isComment){
+                    System.out.println("Caractere: \"" + line[j] + "\" invalido na linha: " + (i + 1));
+                    System.exit(0);
+                }
+                
                 if(line[j] == '}'){
-                    close++;
+                    open--;
                     this.isComment = false;
                     line[j] = '¨';
                 }
+                
+                if(open < 0 || open > 1){
+                    System.out.println("O código possui comentário inválido! Na linha: "+ (i + 1));
+                    System.exit(0);
+                }
+                
                 
                 if(this.isComment == true){
                     line[j] = '¨';
@@ -178,22 +285,15 @@ public class AnalisadorLexico {
             file.set(i, result);
  
         }
-        if(open != close){
-            System.out.println("O código possui comentário inválido");
-            System.exit(0);
-        }
-        
+   
     
             
     }
     
     public Boolean isReservedWord(String token){
         
-        for(int i = 0; i < reservedWords.size(); i++){
-            if(token.equalsIgnoreCase(reservedWords.get(i)))
-                return true;
-        }
-        return false;
+        return reservedWords.contains(token);
+ 
     }
     
     private void classifier (String token, int line){
@@ -248,7 +348,7 @@ public class AnalisadorLexico {
                 
             Tokens = file.get(line).split(" ");
             for(int tok = 0; tok < Tokens.length; tok++){
-                //System.out.println(Tokens[tok]);
+                //System.out.println("Token: " + Tokens[tok]);
                 classifier(Tokens[tok], line + 1);
             }
      
