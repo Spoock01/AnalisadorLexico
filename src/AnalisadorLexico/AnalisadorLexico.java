@@ -42,7 +42,7 @@ public class AnalisadorLexico {
             Usar o arraylist para gerar o arquivo de saída do analisador**
             \t
             Identificador começando com numero
-        
+            Retirar simbolos que n fazem parte da linguagem
         */
         
         
