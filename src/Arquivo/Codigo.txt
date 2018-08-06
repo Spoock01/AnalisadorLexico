@@ -1,9 +1,1 @@
-program teste; {programa exemplo}
-var10.4.5.4416.17.9
-valor1:integer;
-valor2:real;
-beg/in///
-valor1:=10;
-88ff88f
-ff8 882f
-end.
++10e-10

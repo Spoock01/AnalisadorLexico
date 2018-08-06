@@ -42,9 +42,9 @@ public class AnalisadorLexico {
         /* TO DO LIST
         
             Usar o arraylist para gerar o arquivo de saída do analisador**
-            \t
-            Identificador começando com numero
+            
             +-
+            
         */
         
         
@@ -57,14 +57,11 @@ public class AnalisadorLexico {
             return 1;
         
         else if(c == ',' || c == ';' || c == ':' || c == '(' || c == ')' ||
-                c == '/' || c == '*')
+                c == '/' || c == '*' || c ==  '+' || c == '-')
             return 0;
         else if (c == '.')
             return 2;
-        else if (c >= '0' && c <= '9')
-            return 3;
-        else if(c == '+' || c == '-') // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            return 4;
+
         
             
         
@@ -73,12 +70,7 @@ public class AnalisadorLexico {
     }
     
     public void codeAnalyzer(){
-        
-        /*String string = "abcdef";
-        StringBuilder stringBuilder = new StringBuilder(string);
-        stringBuilder.insert(string.length() - 2, ',');
-        System.out.println(stringBuilder.toString());
-        */
+
         StringBuilder stringBuilder;
         
         for(int i = 0; i < file.size(); i++){
@@ -89,12 +81,8 @@ public class AnalisadorLexico {
             
             for(int j = 0; j < (length - 1); j++){
                 
-                //System.out.println("Posicao: " + j + " Char na posicao: " + aux.charAt(j));
                 int desloc = isSymbol(aux.charAt(j), aux.charAt(j + 1));
                 int size = 0;
-                
-                //System.out.println("Testando char '"+ aux.charAt(j) +"' e '" + aux.charAt(j + 1) + "'");
-                //System.out.println("Resultado do isSimbol: " + desloc);
                 
                 /*
                     Se o 'desloc' for 0:
@@ -185,7 +173,8 @@ public class AnalisadorLexico {
                         */
                         else if (aux.charAt(j - 1) <= '0' || aux.charAt(j - 1) >= '9'){
                             stringBuilder.insert(j , ' ');
-                            size++;
+                            stringBuilder.insert(j+2 , ' ');
+                            size+=2;
                         }
                         /*
                         
@@ -194,7 +183,6 @@ public class AnalisadorLexico {
                             stringBuilder.insert(j + 1 , ' ');
                             size++;
                         }
-                        //System.out.println("RESULTADO DO PONTO: " +  stringBuilder.toString());
                             
                         aux = stringBuilder.toString();
                         length = aux.length();
@@ -207,6 +195,7 @@ public class AnalisadorLexico {
                         length = aux.length();
                     }
                 }
+
                 j+= size;
 
             }
@@ -226,11 +215,13 @@ public class AnalisadorLexico {
             /*
                 Retornando string modificada para o arraylist
             */
+            //System.out.println(aux);
             file.set(i, aux.trim());
      
         }
     }
     
+
     public Boolean isInvalid (char c){
         
         if((c >= 'A' && c <= 'Z') ||
@@ -263,13 +254,13 @@ public class AnalisadorLexico {
                 stringBuilder = new StringBuilder(str);
                 
                 if(str.matches(regex)){
-                    System.out.println("DEu match: " + str);
+                   // System.out.println("DEu match: " + str);
                     for(int i = 0; i < Tokens[tok].length(); i++){
-                        System.out.println("Testando o char: " + str.charAt(i));
+                       // System.out.println("Testando o char: " + str.charAt(i));
                         if(!(str.charAt(i) >= '0' && str.charAt(i) <= '9')){
                             stringBuilder.insert(i, ' ');
                             Tokens[tok] = stringBuilder.toString();
-                            System.out.println("Tudo ocorreu aqui: " + stringBuilder.toString());
+                           // System.out.println("Tudo ocorreu aqui: " + stringBuilder.toString());
                             
                             StringJoiner sj = new StringJoiner(" ");
                             for(String s:Tokens) sj.add(s);
@@ -296,6 +287,10 @@ public class AnalisadorLexico {
         for(int i = 0; i < file.size(); i++){
             
             String line1 = file.get(i);
+            
+            line1 = line1.replace("\\t", "");
+            line1 = line1.replace("\\n", "");
+            
             int size = line1.length();
             char[] line = line1.toCharArray();
             
@@ -360,13 +355,7 @@ public class AnalisadorLexico {
         else if(token.matches(regexReal))
             result = "Número real	";
         
-        else if(token.matches(identifier)){
-            if(isReservedWord(token))
-                result = "Palavra reservada";
-            else
-                result = "Identificador     ";
-            
-        }else if(token.equals("*") || token.equals("/") || token.equals("and"))
+        else if(token.equals("*") || token.equals("/") || token.equals("and"))
             result = "Operador multiplicativo";
         
         else if (token.equals(":="))
@@ -380,7 +369,13 @@ public class AnalisadorLexico {
         else if(token.equals(":") ||token.equals(";") ||token.equals(".") ||
                 token.equals(",") ||token.equals("(") || token.equals(")"))
             result = "Delimitador	";
-        else
+        else if(token.matches(identifier)){
+            if(isReservedWord(token))
+                result = "Palavra reservada";
+            else
+                result = "Identificador     ";
+            
+        }else
             return;
         
         table.add(new Table(token, result, line));
@@ -396,7 +391,7 @@ public class AnalisadorLexico {
                 
             Tokens = file.get(line).split(" ");
             for(int tok = 0; tok < Tokens.length; tok++){
-                //System.out.println("Token: " + Tokens[tok]);
+                System.out.println("Token: " + Tokens[tok]);
                 classifier(Tokens[tok], line + 1);
             }
      
