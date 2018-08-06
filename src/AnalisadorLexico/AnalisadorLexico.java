@@ -34,19 +34,10 @@ public class AnalisadorLexico {
             return;
         }
         
-        commentAnalyzer();
-        codeAnalyzer();
-        identifierAnalyzer();
-        analyzer();
-        
-        /* TO DO LIST
-        
-            Usar o arraylist para gerar o arquivo de saída do analisador**
-            
-            +-
-            
-        */
-        
+        commentAnalyzer();      // Faz analise de comentarios e caracteres fora da linguagem
+        codeAnalyzer();         // Faz analise de codigo e separa quase todo o codigo em token
+        identifierAnalyzer();   // Faz analise de identificadores para retirar identificadores começados por numeros
+        analyzer();             // Faz analise de todos os tokens e os classifica
         
     }
     
@@ -57,14 +48,10 @@ public class AnalisadorLexico {
             return 1;
         
         else if(c == ',' || c == ';' || c == ':' || c == '(' || c == ')' ||
-                c == '/' || c == '*' || c ==  '+' || c == '-')
+                c == '/' || c == '*' || c == '+' || c == '-')
             return 0;
         else if (c == '.')
             return 2;
-
-        
-            
-        
         
         return -1;
     }
@@ -195,7 +182,7 @@ public class AnalisadorLexico {
                         length = aux.length();
                     }
                 }
-
+                
                 j+= size;
 
             }
@@ -215,13 +202,11 @@ public class AnalisadorLexico {
             /*
                 Retornando string modificada para o arraylist
             */
-            //System.out.println(aux);
             file.set(i, aux.trim());
      
         }
     }
     
-
     public Boolean isInvalid (char c){
         
         if((c >= 'A' && c <= 'Z') ||
@@ -238,11 +223,9 @@ public class AnalisadorLexico {
     public void identifierAnalyzer() {
         for (int line = 0; line < file.size(); line++){
             
-            /*StringBuilder stringBuilder = new StringBuilder(string);
-            stringBuilder.insert(string.length() - 2, ',');
-            System.out.println(stringBuilder.toString());
+            /*
+                Verificando se um identificador começa com inteiros            
             */
-            
             String[] Tokens;
             String regex = "\\d+\\w+";
             StringBuilder stringBuilder;
@@ -253,30 +236,34 @@ public class AnalisadorLexico {
                 String str = Tokens[tok];
                 stringBuilder = new StringBuilder(str);
                 
+                /*
+                    Se começar com um inteiro, uma busca é feita pra saber
+                    onde esse inteiro termina. Ao fim disso, um espaço é 
+                    colocado nessa posição
+                */
                 if(str.matches(regex)){
-                   // System.out.println("DEu match: " + str);
                     for(int i = 0; i < Tokens[tok].length(); i++){
-                       // System.out.println("Testando o char: " + str.charAt(i));
                         if(!(str.charAt(i) >= '0' && str.charAt(i) <= '9')){
                             stringBuilder.insert(i, ' ');
-                            Tokens[tok] = stringBuilder.toString();
-                           // System.out.println("Tudo ocorreu aqui: " + stringBuilder.toString());
                             
+                            /*
+                                Devolvendo a string montada para o token
+                                E juntando todos os tokens para uma posterior
+                                analise de classificação dos tokens
+                            */
+                            Tokens[tok] = stringBuilder.toString();
                             StringJoiner sj = new StringJoiner(" ");
-                            for(String s:Tokens) sj.add(s);
+                            for(String s:Tokens) 
+                                sj.add(s);
+                            
                             file.set(line, sj.toString());
                             line--;
                             break;
                         }
                             
                     }
-                    
-                    
                 }
-                
-                
             }
-     
         }
     }
     
@@ -288,11 +275,20 @@ public class AnalisadorLexico {
             
             String line1 = file.get(i);
             
+            /*
+                Retirando do texto todos os '\t' e '\n'
+            */
             line1 = line1.replace("\\t", "");
             line1 = line1.replace("\\n", "");
             
             int size = line1.length();
             char[] line = line1.toCharArray();
+            
+            /*
+                Uma verificação é feita caso o caractere '{' aparece no codigo.
+                
+            
+            */
             
             for(int j = 0; j < size; j++){
                 
@@ -328,8 +324,6 @@ public class AnalisadorLexico {
             file.set(i, result);
  
         }
-   
-    
             
     }
     
@@ -391,7 +385,6 @@ public class AnalisadorLexico {
                 
             Tokens = file.get(line).split(" ");
             for(int tok = 0; tok < Tokens.length; tok++){
-                System.out.println("Token: " + Tokens[tok]);
                 classifier(Tokens[tok], line + 1);
             }
      
