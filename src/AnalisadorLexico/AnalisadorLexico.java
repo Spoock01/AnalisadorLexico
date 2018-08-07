@@ -135,11 +135,16 @@ public class AnalisadorLexico {
                                 Se for um digito, o laço irá voltar até o primeiro
                                 número e então colocará um espaço antes desse número
                              */
-                            while(help >= 1 && aux.charAt(help) >= '0' && aux.charAt(help) <= '9'){
+                            while(help >= 1 && aux.charAt(help) >= '0' && aux.charAt(help) <= '9')
                                 help--;
 
-                            }
-   
+                            /*
+                                Verifica se tem um identificador antes do ponto
+                            */
+                            if ((aux.charAt(help) >= 'a' && aux.charAt(help) <= 'z') ||
+                                (aux.charAt(help) >= 'A' && aux.charAt(help) <= 'Z'))
+                                help = jMenos1;
+                            
                             stringBuilder.insert(help == 0 ? 0 : help + 1 , ' ');
                             size++;
                             
@@ -175,14 +180,31 @@ public class AnalisadorLexico {
                         length = aux.length();
                         
                         
-                    }else{
-                        stringBuilder.insert(j + 1 , ' ');
+                    }else if (jMenos1 == 0){
+                        int help = j + 1;
+                        Boolean test = false;
+                        
+                        while(aux.charAt(help) >= '0' && aux.charAt(help) <= '9'){
+                            help++;
+                            test = true;
+                        }
+                            
+                        if(test){
+                            stringBuilder.insert(help, ' ');
+                            size+= 1;
+                        }
+                        
+                        aux = stringBuilder.toString();
+                        length = aux.length();
+                    }                    
+                    else{
+                        stringBuilder.insert(j + 1, ' ');
                         size++;
                         aux = stringBuilder.toString();
                         length = aux.length();
                     }
                 }
-                
+                System.out.println(aux);
                 j+= size;
 
             }
@@ -269,7 +291,6 @@ public class AnalisadorLexico {
     
     public void commentAnalyzer(){
         
-        int open = 0;
         
         for(int i = 0; i < file.size(); i++){
             
@@ -283,17 +304,16 @@ public class AnalisadorLexico {
             
             int size = line1.length();
             char[] line = line1.toCharArray();
+            int test = 0;
             
             /*
                 Uma verificação é feita caso o caractere '{' aparece no codigo.
                 
-            
             */
             
             for(int j = 0; j < size; j++){
                 
                 if(line[j] == '{'){
-                    open++;
                     this.isComment = true;
                 }
                 
@@ -302,17 +322,13 @@ public class AnalisadorLexico {
                     System.exit(0);
                 }
                 
-                if(line[j] == '}'){
-                    open--;
+                if(line[j] == '}' && this.isComment){
                     this.isComment = false;
                     line[j] = '¨';
-                }
-                
-                if(open < 0 || open > 1){
+                }else if(line[j] == '}' && !this.isComment){
                     System.out.println("O código possui comentário inválido! Na linha: "+ (i + 1));
                     System.exit(0);
                 }
-                
                 
                 if(this.isComment == true){
                     line[j] = '¨';
@@ -323,6 +339,10 @@ public class AnalisadorLexico {
             result += " ";
             file.set(i, result);
  
+        }
+        if(this.isComment){
+            System.out.println("Comentário aberto e não fechado!");
+            System.exit(0);
         }
             
     }
