@@ -2,6 +2,8 @@ package AnalisadorLexico;
 
 import java.util.ArrayList;
 import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AnalisadorLexico {
     
@@ -18,13 +20,10 @@ public class AnalisadorLexico {
     }
     
     private Boolean checkFile() {
-        
         /* 
             Retorna TRUE caso o arquivo tenha algum texto.
         */
-        
         return this.file.size() > 0;
-                    
     }
     
     public void generateFile (){
@@ -36,9 +35,70 @@ public class AnalisadorLexico {
         
         commentAnalyzer();      // Faz analise de comentarios e caracteres fora da linguagem
         codeAnalyzer();         // Faz analise de codigo e separa quase todo o codigo em token
+        teste();
         identifierAnalyzer();   // Faz analise de identificadores para retirar identificadores começados por numeros
         analyzer();             // Faz analise de todos os tokens e os classifica
         
+    }
+    
+    public String separando(String line, String regex, String regex2){
+        
+        int offset = 0;
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(line);
+        Pattern pattern2 = Pattern.compile(regex2);
+        Matcher matcher2 = pattern2.matcher(line);
+        StringBuilder str = new StringBuilder(line);
+        
+        
+        while(matcher.find()  && !matcher2.find()){
+            
+                str.insert(matcher.end()   + offset, ' ');
+                str.insert(matcher.start() + offset, ' ');
+                offset += 2;
+        }
+        return str.toString();
+    }
+    
+    public String nonFloat(String line){
+        
+        StringBuilder str = new StringBuilder(line);
+        int length = line.length();
+        
+        for(int i = 0; i < length; i++){
+            
+            if(line.charAt(i) == '.'){
+                
+                if(i == 0 || !Character.isDigit(line.charAt(i - 1))){
+                    str.insert(i + 1, ' ');
+                    str.insert(i, ' ');
+                    length++;
+                    i++;
+                    line = str.toString();
+                }
+            }
+        }
+        
+        
+        return str.toString();
+    }
+    
+    public void teste(){
+        
+        for(int i = 0; i < file.size(); i++){
+            
+            String line = file.get(i);
+            String regex3d = "\\d+[.]\\d*x\\d+[.]\\d*y\\d+[.]\\d*z";
+            String regexIdent = "[a-zA-Z]\\w*\\d*";
+            String regexFloat = "\\d+[.]\\d*";
+            
+            line = separando(line, regex3d, "");
+            line = separando(line, regexIdent, regex3d);
+            line = separando(line, regexFloat,regex3d);
+            line = nonFloat(line);
+            
+            file.set(i, line);
+        }
     }
     
     public int isSymbol(char c, char d){
@@ -50,8 +110,6 @@ public class AnalisadorLexico {
         else if(c == ',' || c == ';' || c == ':' || c == '(' || c == ')' ||
                 c == '/' || c == '*' || c == '+' || c == '-')
             return 0;
-        else if (c == '.')
-            return 2;
         
         return -1;
     }
@@ -72,154 +130,40 @@ public class AnalisadorLexico {
                 int size = 0;
                 
                 /*
-                    Se o 'desloc' for 0:
-                    insere um espaço antes do simbolo e verifica se ja existe um
-                    espaço depois. Caso nao exista, insere um espaço depois do
-                    simbolo tambem.                
-                */
-                if(desloc == 0){
-                    stringBuilder = new StringBuilder(aux);
-                    
-                    if(aux.charAt(j + 1) != ' '){
-                        stringBuilder.insert(j + 1, ' ');
-                        size++;
-                    }
-                    if(aux.charAt(j-1 > 0? j - 1: 0) != ' '){
-                        stringBuilder.insert(j, ' ');
-                        size++;
-                    }                       
-                    aux = stringBuilder.toString();
-                    length = aux.length();
-                } 
-                
-                /*
-                    Se o 'desloc' for 1:
-                    Insere um espaço antes do simbolo composto e verifica se ja
-                    existe um espaço depois do simbolo composto. Caso nao exista,
-                    insere um espaço tambem depois do simbolo composto;
-                
-                */
-                else if(desloc == 1){
-                    
-                    stringBuilder = new StringBuilder(aux);
-                   
-                    if(aux.charAt(j - 1 > 0 ? j - 1 : 0) != ' '){
-                        stringBuilder.insert(j , ' ');
-                        size++;
-                    }
-                    if (aux.charAt(j+3) != ' '){
-                        stringBuilder.insert(j+3 , ' ');
-                        size++;
-                    }
-                    
-                    aux = stringBuilder.toString();
-                    length = aux.length();
-
-                }
-                else if (desloc == 2){
-                    stringBuilder = new StringBuilder(aux);
-                    int jMenos1 = j - 1;
-                    
-                    /*
-                        Caso jMenos1 seja maior que zero, significa que o
-                        ponto não se encontra no inicio da linha
-                    */
-                    
-                    if(jMenos1 > 0){
-                        
-                        
-                        if(aux.charAt(jMenos1) >= '0' && aux.charAt(jMenos1) <= '9'){
-                            int help = jMenos1;
-
-                            /*
-                                Se for um digito, o laço irá voltar até o primeiro
-                                número e então colocará um espaço antes desse número
-                             */
-                            while(help >= 1 && aux.charAt(help) >= '0' && aux.charAt(help) <= '9')
-                                help--;
-
-                            /*
-                                Verifica se tem um identificador antes do ponto
-                            */
-                            if ((aux.charAt(help) >= 'a' && aux.charAt(help) <= 'z') ||
-                                (aux.charAt(help) >= 'A' && aux.charAt(help) <= 'Z'))
-                                help = jMenos1;
-                            
-                            stringBuilder.insert(help == 0 ? 0 : help + 1 , ' ');
+                Se o 'desloc' for 0:
+                insere um espaço antes do simbolo e verifica se ja existe um
+                espaço depois. Caso nao exista, insere um espaço depois do
+                simbolo tambem.
+                 */
+                switch (desloc) {
+                    case 0:
+                        stringBuilder = new StringBuilder(aux);
+                        if(aux.charAt(j + 1) != ' '){
+                            stringBuilder.insert(j + 1, ' ');
                             size++;
-                            
-                            /*
-                                Seguindo a mesma ideia, procurará o ultimo numero
-                                (do numero real) e colocará um espaço no final
-                            */
-                            help = j + 1;
-                            while(aux.charAt(help) >= '0' && aux.charAt(help) <= '9')
-                                help++;
-                            
-                            stringBuilder.insert(help + 1 , ' ');
+                        }   if(aux.charAt(j-1 > 0? j - 1: 0) != ' '){
+                            stringBuilder.insert(j, ' ');
                             size++;
-                            
-                        }
-                        /*
-                            Caso não seja um numero, apenas coloca um espaço antes
-                        */
-                        else if (aux.charAt(j - 1) <= '0' || aux.charAt(j - 1) >= '9'){
+                        }   aux = stringBuilder.toString();
+                        length = aux.length();
+                        break;
+                    case 1:
+                        stringBuilder = new StringBuilder(aux);
+                        if(aux.charAt(j - 1 > 0 ? j - 1 : 0) != ' '){
                             stringBuilder.insert(j , ' ');
-                            stringBuilder.insert(j+2 , ' ');
-                            size+=2;
-                        }
-                        /*
-                        
-                        */
-                        else{
-                            stringBuilder.insert(j + 1 , ' ');
                             size++;
-                        }
-                            
-                        aux = stringBuilder.toString();
+                        }   if (aux.charAt(j+3) != ' '){
+                            stringBuilder.insert(j+3 , ' ');
+                            size++;
+                        }   aux = stringBuilder.toString();
                         length = aux.length();
-                        
-                        
-                    }else if (jMenos1 == 0){
-                        int help = j + 1;
-                        Boolean test = false;
-                        
-                        while(aux.charAt(help) >= '0' && aux.charAt(help) <= '9'){
-                            help++;
-                            test = true;
-                        }
-                            
-                        if(test){
-                            stringBuilder.insert(help, ' ');
-                            size+= 1;
-                        }
-                        
-                        aux = stringBuilder.toString();
-                        length = aux.length();
-                    }                    
-                    else{
-                        stringBuilder.insert(j + 1, ' ');
-                        size++;
-                        aux = stringBuilder.toString();
-                        length = aux.length();
-                    }
+                        break;
+                    default:
+                        break;
                 }
-                System.out.println(aux);
                 j+= size;
 
             }
-            
-            /*
-                Caso o caractere final seja um ; (ponto e virgula)
-                então é inserido um espaço antes do ; para separar
-                do identificador.
-            */
-            
-            if(aux.charAt(aux.length() - 1) == ';'){
-                stringBuilder = new StringBuilder(aux);
-                stringBuilder.insert(aux.length() - 1, ' ');
-                aux = stringBuilder.toString();
-            }    
             
             /*
                 Retornando string modificada para o arraylist
@@ -228,14 +172,14 @@ public class AnalisadorLexico {
      
         }
     }
-    
+  
     public Boolean isInvalid (char c){
         
         if((c >= 'A' && c <= 'Z') ||
           (c >= 'a' && c <= 'z') ||
           (c >= '0' && c <= '>') ||
           (c >= '(' && c <= '/') ||
-          (c == '{' || c == '}' || c == ' '))
+          (c == '{' || c == '}' || c == ' ' || c == '_'))
                 return false;
              
         
@@ -278,11 +222,10 @@ public class AnalisadorLexico {
                             for(String s:Tokens) 
                                 sj.add(s);
                             
-                            file.set(line, sj.toString());
-                            line--;
+                            file.set(line > 0 ? line : 0, sj.toString());
+                            line = line > 0 ? line -1: line;
                             break;
                         }
-                            
                     }
                 }
             }
@@ -291,11 +234,9 @@ public class AnalisadorLexico {
     
     public void commentAnalyzer(){
         
-        
         for(int i = 0; i < file.size(); i++){
             
             String line1 = file.get(i);
-            
             /*
                 Retirando do texto todos os '\t' e '\n'
             */
@@ -313,29 +254,38 @@ public class AnalisadorLexico {
             
             for(int j = 0; j < size; j++){
                 
-                if(line[j] == '{'){
+                if(line[j] == '{' && this.isComment == false){
                     this.isComment = true;
                 }
-                
+                if (j + 1 < size){
+                    if (line[j] == '/' && line[j+1] == '/' && this.isComment == false){
+                         this.isComment = true;
+                         test = 1;
+                    }
+                }
                 if(isInvalid(line[j]) && !this.isComment){
                     System.out.println("Caractere: \"" + line[j] + "\" invalido na linha: " + (i + 1));
                     System.exit(0);
                 }
                 
-                if(line[j] == '}' && this.isComment){
+                if(line[j] == '}' && this.isComment && test != 1){
                     this.isComment = false;
-                    line[j] = '¨';
+                    line[j] = Character.MIN_VALUE;
                 }else if(line[j] == '}' && !this.isComment){
                     System.out.println("O código possui comentário inválido! Na linha: "+ (i + 1));
                     System.exit(0);
                 }
                 
                 if(this.isComment == true){
-                    line[j] = '¨';
+                    line[j] = Character.MIN_VALUE;
                 }             
             }
+            if(test == 1 && this.isComment == true){
+                this.isComment = false;
+                test = 0;
+            }
+            
             String result = String.valueOf(line);
-            result = result.replace('¨', Character.MIN_VALUE);
             result += " ";
             file.set(i, result);
  
@@ -348,9 +298,7 @@ public class AnalisadorLexico {
     }
     
     public Boolean isReservedWord(String token){
-        
         return reservedWords.contains(token);
- 
     }
     
     private void classifier (String token, int line){
@@ -358,23 +306,22 @@ public class AnalisadorLexico {
         String regexInteger = "\\d+";
         String regexReal = "\\d+\\.\\d*";
         String identifier = "\\w+";
+        String real3d = "\\d+[.]\\d*x\\d+[.]\\d*y\\d+[.]\\d*z";
         String result = "";
         
         if(token.isEmpty())
             return;
         
-        if(token.matches(regexInteger))
+        if(token.matches(real3d))
+            result = "Real 3D";
+        else if(token.matches(regexInteger))
             result = "Número inteiro	";
-        
         else if(token.matches(regexReal))
             result = "Número real	";
-        
         else if(token.equals("*") || token.equals("/") || token.equals("and"))
             result = "Operador multiplicativo";
-        
         else if (token.equals(":="))
             result = "Atribuição	";
-        
         else if (token.equals("+") || token.equals("-") || token.equals("or"))
             result = "Operador aditivo";
         else if(token.equals("<") || token.equals(">") || token.equals("=") ||
@@ -388,12 +335,10 @@ public class AnalisadorLexico {
                 result = "Palavra reservada";
             else
                 result = "Identificador     ";
-            
         }else
             return;
         
         table.add(new Table(token, result, line));
-        
 
     }
     
@@ -405,14 +350,13 @@ public class AnalisadorLexico {
                 
             Tokens = file.get(line).split(" ");
             for(int tok = 0; tok < Tokens.length; tok++){
+                //System.out.println(Tokens[tok]);
                 classifier(Tokens[tok], line + 1);
             }
-     
         }
         
         for(int i = 0; i < table.size(); i++)
             System.out.println(table.get(i).toString());
         
     }
-    
 }
