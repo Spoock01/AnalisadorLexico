@@ -79,7 +79,6 @@ public class AnalisadorLexico {
             }
         }
         
-        
         return str.toString();
     }
     
@@ -275,7 +274,6 @@ public class AnalisadorLexico {
                     System.out.println("O código possui comentário inválido! Na linha: "+ (i + 1));
                     System.exit(0);
                 }
-                
                 if(this.isComment == true){
                     line[j] = Character.MIN_VALUE;
                 }             
@@ -349,10 +347,10 @@ public class AnalisadorLexico {
             String[] Tokens;
                 
             Tokens = file.get(line).split(" ");
-            for(int tok = 0; tok < Tokens.length; tok++){
-                //System.out.println(Tokens[tok]);
+            
+            for(int tok = 0; tok < Tokens.length; tok++)
                 classifier(Tokens[tok], line + 1);
-            }
+
         }
         
         for(int i = 0; i < table.size(); i++)
