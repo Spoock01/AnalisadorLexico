@@ -20,6 +20,18 @@ public class Table {
     public String toString(){        
         return this.Token + "\t\t" + this.Classificacao + "\t" + this.Line + "\t\t";
     }
+
+    public String getToken() {
+        return Token;
+    }
+
+    public String getClassificacao() {
+        return Classificacao;
+    }
+
+    public int getLine() {
+        return Line;
+    }
     
     
     

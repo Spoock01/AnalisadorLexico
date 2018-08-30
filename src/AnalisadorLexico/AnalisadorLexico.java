@@ -26,11 +26,11 @@ public class AnalisadorLexico {
         return this.file.size() > 0;
     }
     
-    public void generateFile (){
+    public ArrayList<Table> generateFile (){
         
         if (!checkFile()){
             System.out.println("O arquivo não tem texto suficiente!\n");
-            return;
+            return null;
         }
         
         commentAnalyzer();      // Faz analise de comentarios e caracteres fora da linguagem
@@ -39,6 +39,7 @@ public class AnalisadorLexico {
         identifierAnalyzer();   // Faz analise de identificadores para retirar identificadores começados por numeros
         analyzer();             // Faz analise de todos os tokens e os classifica
         
+        return this.table;
     }
     
     public String separando(String line, String regex, String regex2){
