@@ -65,6 +65,7 @@ public class Syntax {
    
    public void listaDeclaracaoVariaveis(){
        
+       
    }
    
    public void listaIdentificadores(){
@@ -72,9 +73,13 @@ public class Syntax {
    }
    
    public void tipo(){
-       
-   }
-   
+       if(currentToken.getClassificacao().equals("Palavra reservada") &&
+          (currentToken.getToken().equals("integer") || currentToken.getToken().equals("real")
+        || currentToken.getToken().equals("boolean")))
+           nextToken();
+       else
+           System.out.println("DEU ERRO NO TIPO");
+   }   
    public void declaracaoSubprogramas(){
        
    }
@@ -92,7 +97,16 @@ public class Syntax {
    }
    
    public void comandoComposto(){
-       
+        if (currentToken.getToken().equals("begin")){
+           nextToken();
+           comandosOpcionais();
+           if(currentToken.getToken().equals("end"))
+               nextToken();
+           else
+                System.out.println("Deu pau! esperando end");
+       }else{
+            System.out.println("DEU PAU! esperando begin");
+        }
    }
    
    public void comandosOpcionais(){
@@ -105,7 +119,7 @@ public class Syntax {
    }
    
    public void comando(){
-       
+
        
    }
    
@@ -143,20 +157,30 @@ public class Syntax {
    }
    
    public void sinal(){
-       
-       
+        if(currentToken.getToken().equals("+") || currentToken.getToken().equals("-"))
+            nextToken();      
+        else
+            System.out.println("Deu pau! esperando sinal + ou -");
    }
    
    public void opRelacional(){
-       
+       if(currentToken.getToken().equals("Operador relacional"))
+           nextToken();
+       else
+           System.out.println("Deu pau! esperando operador relacional");
    }
    
    public void opAditivo(){
-       
-       
+       if(currentToken.getToken().equals("Operador aditivo"))
+           nextToken();
+       else
+           System.out.println("Deu pau! esperando operador aditivo");
    }
    
    public void opMultiplicativo(){
-       
+       if(currentToken.getToken().equals("Operador multiplicativo"))
+           nextToken();
+       else
+           System.out.println("Deu pau! esperando operador multiplicativo");
    }
 }

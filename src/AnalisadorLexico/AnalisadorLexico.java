@@ -314,9 +314,9 @@ public class AnalisadorLexico {
         if(token.matches(real3d))
             result = "Real 3D";
         else if(token.matches(regexInteger))
-            result = "Número inteiro	";
+            result = "Número inteiro";
         else if(token.matches(regexReal))
-            result = "Número real	";
+            result = "Número real";
         else if(token.equals("*") || token.equals("/") || token.equals("and"))
             result = "Operador multiplicativo";
         else if (token.equals(":="))
