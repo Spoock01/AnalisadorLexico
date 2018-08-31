@@ -64,12 +64,12 @@ public class Syntax {
    }
    
    public void listaDeclaracaoVariaveis(){
-       
+       // TA F0D4
        
    }
    
    public void listaIdentificadores(){
-       
+       // TA F0D4
    }
    
    public void tipo(){
@@ -128,7 +128,7 @@ public class Syntax {
    }
    
    public void variavel(){
-       
+       // TA F0D4
    }
    
    public void ativacaoProcedimento(){
@@ -136,23 +136,23 @@ public class Syntax {
    }
    
    public void listaExpressoes(){
-       
+       // TA F0D4
    }
    
    public void expressao(){
-       
+       // TA F0D4
    }
    
    public void expressaoSimples(){
-       
+       // TA F0D4
    }
    
    public void termo(){
-       
+       // TA F0D4
    }
    
    public void fator(){
-       
+       // TA F0D4
        
    }
    
