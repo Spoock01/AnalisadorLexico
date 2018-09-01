@@ -181,8 +181,6 @@ public class Syntax {
                 return false;       
         else
             return true;
-        
-       
 
    }
    
@@ -195,7 +193,11 @@ public class Syntax {
       }
     }
    public Boolean fator(){
-       // TA F0D4
+       
+       if(currentToken.getClassificacao().equals("Número inteiro") ||
+          currentToken.getClassificacao().equals("Número real") ||
+          currentToken.getClassificacao().)
+       
        return true;
    }
    
