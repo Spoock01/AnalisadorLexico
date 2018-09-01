@@ -70,9 +70,40 @@ public class Syntax {
 
         return true;
     }
+    
+    public boolean listaIdentificadores_(){
+
+        if(currentToken.getToken().equals(",")){
+            nextToken();
+            if(currentToken.getClassificacao().equals("Identificador")){
+                nextToken();
+                if(listaIdentificadores_()){
+                    nextToken();
+                    return true;
+                }else{
+                    System.out.println("Esperando listaIdentificadores_ em listaIdentificadores_");
+                    return false;
+                }
+                    
+            }else{
+                System.out.println("Esperando identificador em listaIdentificadores_");
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
 
     public boolean listaIdentificadores(){
-        // TA F0D4
+        if(currentToken.getClassificacao().equals("Identificador")){
+            nextToken();
+            if(listaIdentificadores_()){
+                return true;
+            }else{
+                System.out.println("Esperando listaIdentificadores_() em listaIdentificadores");
+                return false;
+            }
+        }
 
         return true;
     }
