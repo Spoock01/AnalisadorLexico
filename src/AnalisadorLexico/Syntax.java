@@ -181,13 +181,21 @@ public class Syntax {
                     if(currentToken.getToken().equals(")")){
                         nextToken();
                         return true;
+                    }else{
+                        System.out.println("Esperando ) em ativacao procedimento");
+                        return false;
                     }
                 }else{
-                    
+                    System.out.println("Esperando listaExpressoes em ativacaoProcedimento");
+                    return false;
                 }
+            }else{
+                return true;
             }
+        }else{
+            System.out.println("Esperando identificador em ativacaoProcedimento");
+            return false;
         }
-        return true;
     }
 
     public Boolean listaExpressoes(){
