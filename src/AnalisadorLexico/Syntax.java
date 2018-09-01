@@ -108,76 +108,228 @@ public class Syntax {
         return true;
     }
 
-    public void tipo(){
+   public boolean tipo(){
         if(currentToken.getClassificacao().equals("Palavra reservada") &&
-           (currentToken.getToken().equals("integer") || currentToken.getToken().equals("real")
-         || currentToken.getToken().equals("boolean")))
-            nextToken();
-        else
-            System.out.println("DEU ERRO NO TIPO");
-    }  
+          (currentToken.getToken().equals("integer") || currentToken.getToken().equals("real")
+        || currentToken.getToken().equals("boolean"))){
+           
+           nextToken();
+           return true;
+           
+        }
+            
+        System.out.println("DEU ERRO NO TIPO");
+        return false;
+
+   }   
     
-    public void declaracaoSubprogramas(){
-
-    }
-
-    public void declaracaoSubprograma(){
-
-        if(currentToken.getToken().equals("procedure")){
-
-            nextToken();
-
-            if(currentToken.getClassificacao().equals("Identificador")){
-
+   public boolean declaracaoSubprogramas(){
+       
+       return declaracaoSubprogramas_();
+       
+   }
+   
+   public boolean declaracaoSubprogramas_(){
+       
+       if(declaracaoSubprograma()){
+           
+           nextToken();
+           
+           if(currentToken.getToken().equals(";")){
+               
+               nextToken();
+               return declaracaoSubprogramas_();
+               
+           }else{
+               
+               System.out.println("Faltou o ; em declaracaoSubprogramas_()");
+               return false;
+               
+           }
+           
+       }
+       
+       return true;
+   }
+   
+   public boolean declaracaoSubprograma(){
+       
+       if(currentToken.getToken().equals("procedure")){
+           
+           nextToken();
+           
+           if(currentToken.getClassificacao().equals("Identificador")){
+               
                 nextToken();
-
+               
                 if(argumentos()){
+                   
+                   nextToken();
+                   
+                    if(currentToken.getToken().equals(";")){
+                       
+                        nextToken();
+                       
+                        if(declaracaoVariaveis()){
 
-                }else{
+                            nextToken();
 
-                    System.out.println("Tem alguma coisa errada nos argumentos!!");
+                            if(declaracaoSubprogramas()){
 
-                }
+                                nextToken();
 
+                                if(comandoComposto()){
+
+                                    nextToken();
+                                    return true;
+
+                                }else{
+
+                                    System.out.println("Erro comandoComposto em declaracaoSubprograma");
+                                    return false;
+
+                                }    
+
+
+                            }else{
+
+                                System.out.println("Erro declaracaoSubprogramas em declaracaoVariaveis");
+                                return false;
+
+                            }
+
+                        }else{
+                            
+                            System.out.println("Erro declaracaoVariaveis em ;");
+                            return false;
+                            
+                        }
+                       
+                    }else{
+                        
+                        System.out.println("Erro ; em argumentos");
+                        return false;
+                        
+                    } 
+                   
+               }else{
+                   
+                   System.out.println("Tem alguma coisa errada nos argumentos!!");
+                   return false;
+                   
+               }
+               
+           }else{
+               
+               System.out.println("Faltou o identificador, moral!!");
+               return false;
+               
+           }
+           
+       }
+       
+       return false;
+       
+   }
+
+   public boolean argumentos(){
+       
+       if(currentToken.getToken().equals("(")){
+           
+           nextToken();
+           
+           if(listaParametros()){
+               
+               nextToken();
+               
+               if(currentToken.getToken().equals(")")){
+                   
+                   nextToken();
+                   return true;
+                   
+               }else{
+                   
+                   System.out.println("Faltou ) nos argumentos");
+                   return false;
+                   
+               }
+               
+           }else{
+               
+               System.out.println("Erro na listaParametros nos argumentos");
+               return false;
+               
+           }
+           
+       }
+       
+       return true;
+       
+   }
+
+   
+   /*
+        ########################################
+        Falta fazer
+        ########################################
+    
+   */
+   public boolean listaParametros(){
+       
+       if(listaIdentificadores()){
+           
+           nextToken();
+           
+           if(currentToken.getToken().equals(":")){
+               
+               nextToken();
+               
+               if(tipo()){
+                   
+                   nextToken();
+                   return true;
+                   
+               }else{
+                   
+                   System.out.println("Erro tipo na listaParametros");
+                   return false;
+                   
+               }
+               
+           }else{
+               
+               System.out.println("Erro : na listaParametros");
+               return false;
+               
+           }
+           
+       }else{
+           
+           
+           
+       }
+       
+       return false;
+       
+   }
+
+   public boolean comandoComposto(){
+        if (currentToken.getToken().equals("begin")){
+           nextToken();
+           comandosOpcionais();
+           if(currentToken.getToken().equals("end")){
+               nextToken();
+               return true;
             }else{
-
-                System.out.println("Faltou o identificador, moral!!");
-
+                System.out.println("Deu pau! esperando end");
+                return false;
             }
-
-        }
-
-    }
-
-    public boolean argumentos(){
-
-        if(currentToken.getToken().equals("(")){
-
-            nextToken();
-
-
-        }
-
-        return true;
-
-    }
-
-    public void listaParametros(){
-
-    }
-
-    public void comandoComposto(){
-         if (currentToken.getToken().equals("begin")){
-            nextToken();
-            comandosOpcionais();
-            if(currentToken.getToken().equals("end"))
-                nextToken();
-            else
-                 System.out.println("Deu pau! esperando end");
         }else{
-             System.out.println("DEU PAU! esperando begin");
-         }
-    }
+            System.out.println("DEU PAU! esperando begin");
+            return false;
+        }
+        
+   }
 
     public void comandosOpcionais(){
 
