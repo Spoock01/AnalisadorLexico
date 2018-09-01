@@ -172,31 +172,27 @@ public class Syntax {
    }
    
    public Boolean termo_(){
-       if(termo_()){
-           nextToken();
-           if(opMultiplicativo()){
-               nextToken();
-               if(fator()){
-                   nextToken();
-                   return true;
-               }else{
-                   System.out.println("Esperando Fator em termo_");
-               }
-           }else{
-               System.out.println("Esperando opMult em termo_");
-               return false;
-           }
-       }
-       return true;
+       
+        if(opMultiplicativo())
+            if(fator() && termo_()){
+                nextToken();
+                return true;
+            }else
+                return false;       
+        else
+            return true;
+        
+       
+
    }
    
     public Boolean termo(){
-       if(fator() || termo_()){
-           nextToken();
-           return true;
-       }else{
-           return false;
-       }
+      if(fator() && termo_()){
+          return true;
+      }else{
+          System.out.println("Deu erro no termo.");
+          return false;
+      }
     }
    public Boolean fator(){
        // TA F0D4
@@ -215,10 +211,12 @@ public class Syntax {
            nextToken();
            return true;
         }    
-        else
-           System.out.println("Deu pau! esperando operador relacional");
-       
-       return false;
+        else{
+            previousToken();
+            System.out.println("Deu pau! esperando operador relacional");
+        }
+        
+        return false;
    }
    
    public Boolean opAditivo(){
@@ -226,9 +224,10 @@ public class Syntax {
            nextToken();
            return true;
         }    
-        else
-           System.out.println("Deu pau! esperando operador aditivo");
-       
+        else{
+            System.out.println("Deu pau! esperando operador aditivo");
+            previousToken();
+        }
        return false;
    }
    
@@ -237,9 +236,11 @@ public class Syntax {
            nextToken();
            return true;
         }    
-        else
-           System.out.println("Deu pau! esperando operador multiplicativo");
-       
+        else{
+            previousToken();
+            System.out.println("Deu pau! esperando operador multiplicativo");
+        }
+
        return false;
    }
 }

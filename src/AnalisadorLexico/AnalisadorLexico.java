@@ -320,7 +320,7 @@ public class AnalisadorLexico {
         else if(token.equals("*") || token.equals("/") || token.equals("and"))
             result = "Operador multiplicativo";
         else if (token.equals(":="))
-            result = "Atribuição	";
+            result = "Atribuição";
         else if (token.equals("+") || token.equals("-") || token.equals("or"))
             result = "Operador aditivo";
         else if(token.equals("<") || token.equals(">") || token.equals("=") ||
@@ -328,12 +328,12 @@ public class AnalisadorLexico {
             result = "Operador relacional";
         else if(token.equals(":") ||token.equals(";") ||token.equals(".") ||
                 token.equals(",") ||token.equals("(") || token.equals(")"))
-            result = "Delimitador	";
+            result = "Delimitador";
         else if(token.matches(identifier)){
             if(isReservedWord(token))
                 result = "Palavra reservada";
             else
-                result = "Identificador     ";
+                result = "Identificador";
         }else
             return;
         
