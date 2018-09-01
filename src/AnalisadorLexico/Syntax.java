@@ -128,32 +128,79 @@ public class Syntax {
    }
    
    public void variavel(){
-       // TA F0D4
+       if(currentToken.getClassificacao().equals("Identificador")){
+           nextToken();
+       }else
+           System.out.println("DEU PAU NA VARIAVEL! Esperando Identificador.");
    }
    
    public void ativacaoProcedimento(){
        
    }
    
-   public void listaExpressoes(){
-       // TA F0D4
+   public Boolean listaExpressoes(){
+       nextToken();
+       if(expressao()){
+           nextToken();
+       }else if(listaExpressoes()){
+           nextToken();
+       }else{
+           System.out.println("Deu pau na lista de expressoes");
+           return false;
+       }
+       return true;
    }
    
-   public void expressao(){
-       // TA F0D4
-   }
-   
-   public void expressaoSimples(){
-       // TA F0D4
-   }
-   
-   public void termo(){
-       // TA F0D4
-   }
-   
-   public void fator(){
-       // TA F0D4
+   public Boolean expressao(){
        
+       if(expressaoSimples()){
+           if(opRelacional() && expressaoSimples()){
+               nextToken();
+               return true;
+           }else{
+               nextToken();
+               return true;
+           }
+       }else{
+           return false;
+       }
+   }
+   
+   public Boolean expressaoSimples(){
+       // TA F0D4
+       return true;
+   }
+   
+   public Boolean termo_(){
+       if(termo_()){
+           nextToken();
+           if(opMultiplicativo()){
+               nextToken();
+               if(fator()){
+                   nextToken();
+                   return true;
+               }else{
+                   System.out.println("Esperando Fator em termo_");
+               }
+           }else{
+               System.out.println("Esperando opMult em termo_");
+               return false;
+           }
+       }
+       return true;
+   }
+   
+    public Boolean termo(){
+       if(fator() || termo_()){
+           nextToken();
+           return true;
+       }else{
+           return false;
+       }
+    }
+   public Boolean fator(){
+       // TA F0D4
+       return true;
    }
    
    public void sinal(){
@@ -163,24 +210,36 @@ public class Syntax {
             System.out.println("Deu pau! esperando sinal + ou -");
    }
    
-   public void opRelacional(){
-       if(currentToken.getToken().equals("Operador relacional"))
+   public Boolean opRelacional(){
+        if(currentToken.getToken().equals("Operador relacional")){
            nextToken();
-       else
+           return true;
+        }    
+        else
            System.out.println("Deu pau! esperando operador relacional");
+       
+       return false;
    }
    
-   public void opAditivo(){
-       if(currentToken.getToken().equals("Operador aditivo"))
+   public Boolean opAditivo(){
+        if(currentToken.getToken().equals("Operador aditivo")){
            nextToken();
-       else
+           return true;
+        }    
+        else
            System.out.println("Deu pau! esperando operador aditivo");
+       
+       return false;
    }
    
-   public void opMultiplicativo(){
-       if(currentToken.getToken().equals("Operador multiplicativo"))
+   public Boolean opMultiplicativo(){
+        if(currentToken.getToken().equals("Operador multiplicativo")){
            nextToken();
-       else
+           return true;
+        }    
+        else
            System.out.println("Deu pau! esperando operador multiplicativo");
+       
+       return false;
    }
 }
