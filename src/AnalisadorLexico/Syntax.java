@@ -84,7 +84,8 @@ public class Syntax {
             nextToken();
         else
             System.out.println("DEU ERRO NO TIPO");
-    }   
+    }  
+    
     public void declaracaoSubprogramas(){
 
     }
