@@ -54,22 +54,27 @@ public class Syntax {
        }
    }
    
-   public void declaracaoVariaveis(){
+   public boolean declaracaoVariaveis(){
        
        if(this.currentToken.getToken().equals("var")){
            nextToken();
-           listaDeclaracaoVariaveis();
+           return listaDeclaracaoVariaveis();
        }
        
-   }
-   
-   public void listaDeclaracaoVariaveis(){
-       // TA F0D4
+       return false;
        
    }
    
-   public void listaIdentificadores(){
+   public boolean listaDeclaracaoVariaveis(){
        // TA F0D4
+       
+       return true;
+   }
+   
+   public boolean listaIdentificadores(){
+       // TA F0D4
+       
+       return true;
    }
    
    public void tipo(){
@@ -86,9 +91,42 @@ public class Syntax {
    
    public void declaracaoSubprograma(){
        
+       if(currentToken.getToken().equals("procedure")){
+           
+           nextToken();
+           
+           if(currentToken.getClassificacao().equals("Identificador")){
+               
+               nextToken();
+               
+               if(argumentos()){
+                   
+               }else{
+                   
+                   System.out.println("Tem alguma coisa errada nos argumentos!!");
+                   
+               }
+               
+           }else{
+               
+               System.out.println("Faltou o identificador, moral!!");
+               
+           }
+           
+       }
+       
    }
    
-   public void argumentos(){
+   public boolean argumentos(){
+       
+       if(currentToken.getToken().equals("(")){
+           
+           nextToken();
+           
+           
+       }
+       
+       return true;
        
    }
    
