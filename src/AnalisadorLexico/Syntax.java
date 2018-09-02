@@ -262,7 +262,6 @@ public class Syntax {
                
            }else{
                
-               System.out.println("Faltou o ; em declaracaoSubprogramas_()");
                return false;
                
            }
@@ -431,7 +430,6 @@ public class Syntax {
                 return false;
             }
         }else{
-            System.out.println("DEU PAU! esperando begin");
             return false;
         }
         
@@ -479,12 +477,7 @@ public class Syntax {
                     return false;
                     
                 }
-            else{
-                
-                System.out.println("Erro comando depois do ; em listaComandos_");
-                System.exit(0);
-                
-            }
+            
         }
                 
         return true;
@@ -603,8 +596,14 @@ public class Syntax {
             }
             
         }
-
-        return ativacaoProcedimento() || comandoComposto();
+        
+        if(ativacaoProcedimento()){
+            return true;
+        }else if(comandoComposto()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public boolean parteElse(){
@@ -648,7 +647,6 @@ public class Syntax {
                 return true;
             }
         }else{
-            System.out.println("Esperando identificador em ativacaoProcedimento");
             return false;
         }
     }
