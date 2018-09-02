@@ -427,7 +427,7 @@ public class Syntax {
             System.out.println("DEU PAU NA VARIAVEL! Esperando Identificador.");
     }
 
-    public Boolean ativacaoProcedimento(){
+    public boolean ativacaoProcedimento(){
         if(currentToken.getClassificacao().equals("Identificador")){
             nextToken();
             if(currentToken.getToken().equals("(")){
@@ -453,7 +453,7 @@ public class Syntax {
         }
     }
 
-    public Boolean listaExpressoes(){
+    public boolean listaExpressoes(){
         nextToken();
         if(expressao()){
             nextToken();
@@ -466,7 +466,7 @@ public class Syntax {
         return true;
     }
 
-    public Boolean expressao(){
+    public boolean expressao(){
 
         if(expressaoSimples()){
             if(opRelacional() && expressaoSimples()){
@@ -481,7 +481,7 @@ public class Syntax {
         }
     }
 
-    public Boolean expressaoSimples_(){
+    public boolean expressaoSimples_(){
         
         if(opAditivo()){
             if(termo()){
@@ -501,7 +501,7 @@ public class Syntax {
         }
     }
 
-    public Boolean expressaoSimples(){
+    public boolean expressaoSimples(){
         if(termo()){
             if(expressaoSimples_()){
                 return true;
@@ -527,7 +527,7 @@ public class Syntax {
 
     }
 
-    public Boolean termo_(){
+    public boolean termo_(){
        
         if(opMultiplicativo()){
             if(fator()){
@@ -547,7 +547,7 @@ public class Syntax {
         }
    }
    
-    public Boolean termo(){
+    public boolean termo(){
       if(fator() && termo_()){
           return true;
       }else{
@@ -556,7 +556,7 @@ public class Syntax {
       }
     }
     
-    public Boolean fator(){
+    public boolean fator(){
 
 
         /*
@@ -618,7 +618,7 @@ public class Syntax {
 
     }
 
-    public Boolean sinal(){
+    public boolean sinal(){
          if(currentToken.getToken().equals("+") || currentToken.getToken().equals("-")){
              nextToken(); 
              return true;
@@ -629,7 +629,7 @@ public class Syntax {
          }
     }
 
-    public Boolean opRelacional(){
+    public boolean opRelacional(){
          if(currentToken.getToken().equals("Operador relacional")){
             nextToken();
             return true;
@@ -642,7 +642,7 @@ public class Syntax {
          return false;
     }
 
-    public Boolean opAditivo(){
+    public boolean opAditivo(){
          if(currentToken.getToken().equals("Operador aditivo")){
             nextToken();
             return true;
@@ -654,7 +654,7 @@ public class Syntax {
         return false;
     }
 
-    public Boolean opMultiplicativo(){
+    public boolean opMultiplicativo(){
         if(currentToken.getToken().equals("Operador multiplicativo")){
            nextToken();
            return true;
