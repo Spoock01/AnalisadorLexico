@@ -60,7 +60,7 @@ public class Syntax {
 
                                 if(currentToken.getToken().equals(".")){
                                     
-                                    System.out.println("Deu tudo certo, pode ir um cszinhi");
+                                    System.out.println("Deu tudo certo!!");
                                     
                                 }else{
                                     System.out.println("Faltou o . no final do programa");
@@ -252,8 +252,6 @@ public class Syntax {
    public boolean declaracaoSubprogramas_(){
        
        if(declaracaoSubprograma()){
-           
-           //nextToken();
            
            if(currentToken.getToken().equals(";")){
                
@@ -468,7 +466,6 @@ public class Syntax {
             if(comando())
                 if(listaComandos_()){
                     
-                    nextToken();
                     return true;
                     
                 }else{
@@ -493,7 +490,6 @@ public class Syntax {
                 
                 if(expressao()){
                     
-                    //nextToken();
                     return true;
                     
                 }else{
@@ -516,16 +512,12 @@ public class Syntax {
             
             if(expressao()){
                 
-                //nextToken();
-                
                 if(currentToken.getToken().equals("then")){
                     
                     nextToken();
                     
                     //acho que pode ficar num loop aqui
                     if(comando()){
-                        
-                        //nextToken();
                         
                         if(parteElse()){
                             
@@ -568,10 +560,8 @@ public class Syntax {
                     
                     nextToken();
                     
-                    //Acho que vai ficar em um loop
                     if(comando()){
                         
-                        //nextToken();
                         return true;
                         
                     }else{
@@ -795,7 +785,6 @@ public class Syntax {
         }else if(currentToken.getToken().equals("(")){
             nextToken();
             if(expressao()){
-                //nextToken();
                 if(currentToken.getToken().equals(")")){
                     nextToken();
                     return true;
