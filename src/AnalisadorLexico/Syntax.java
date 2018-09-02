@@ -183,9 +183,10 @@ public class Syntax {
                 System.out.println("Esperando listaIdentificadores_() em listaIdentificadores");
                 return false;
             }
+        }else{
+            return false;
         }
 
-        return true;
     }
 
    public boolean tipo(){
