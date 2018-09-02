@@ -346,14 +346,16 @@ public class Syntax {
        return true;
        
    }
-
-   
-   /*
-        ########################################
-        Falta fazer
-        ########################################
+ 
+    /*
+    ###############################
+    ###############################
     
-   */
+        PRESTAR ATENÇÃO NA RECURSÃO AQUI
+    
+    ###############################
+    ###############################
+    */
    public boolean listaParametros(){
        
        if(listaIdentificadores()){
@@ -367,6 +369,20 @@ public class Syntax {
                if(tipo()){
                    
                    nextToken();
+                   
+                   if(currentToken.getToken().equals(";")){
+                       
+                       nextToken();
+                       
+                       if(!listaParametros()){
+                           
+                           System.out.println("Erro listaParametro em listaParametros");
+                           return false;                          
+                           
+                       }
+                       
+                   }
+                   
                    return true;
                    
                }else{
@@ -383,12 +399,9 @@ public class Syntax {
                
            }
            
-       }else{
-           
-           
-           
        }
        
+       System.out.println("Erro listaIdentificadoes em listaParametros");
        return false;
        
    }
@@ -424,10 +437,42 @@ public class Syntax {
         return listaComandos();
 
     }
-
+    
+    /*
+    ###############################
+    ###############################
+    
+        PRESTAR ATENÇÃO NA RECURSÃO AQUI
+    
+    ###############################
+    ###############################
+    */
     public boolean listaComandos(){
+        
+        if(comando()){
+            
+            nextToken();
+            
+            if(currentToken.getToken().equals(";")){
+                
+                nextToken();
+                
+                //So da erro se a listaComando tiver errado
+                if(!listaComandos()){
+                    
+                    System.out.println("Erro no listaComandos em listaComandos");
+                    return false;
+                    
+                }
+                
+            }
+            
+            return true;
+            
+        }
 
-        return true;
+        System.out.println("Erro comando em listaComandos");
+        return false;
     }
 
     public boolean comando(){
