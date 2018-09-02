@@ -893,10 +893,10 @@ public class Syntax {
             nextToken();
             return true;
          }    
-         else{
-             previousToken();
-             System.out.println("Deu pau! esperando operador relacional");
-         }
+         //else{
+             //previousToken();
+           //  System.out.println("Deu pau! esperando operador relacional");
+        // }
 
          return false;
     }
@@ -906,10 +906,10 @@ public class Syntax {
             nextToken();
             return true;
          }    
-         else{
-             System.out.println("Deu pau! esperando operador aditivo");
-             previousToken();
-         }
+         //else{
+         //    System.out.println("Deu pau! esperando operador aditivo");
+             //previousToken();
+        // }
         return false;
     }
 
@@ -918,9 +918,9 @@ public class Syntax {
            nextToken();
            return true;
         }    
-        else{
-            System.out.println("Deu pau! esperando operador multiplicativo");
-        }
+        //else{
+        //    System.out.println("Deu pau! esperando operador multiplicativo");
+       // }
 
        return false;
    }
