@@ -14,9 +14,11 @@ public class Syntax {
 
     private void previousToken(){
 
-        if(nextTokenIndex - 1 >= 0)
+        if(nextTokenIndex - 1 >= 0){
             this.currentToken = tokens.get(--nextTokenIndex);
-        else
+            System.out.println("TOKEN Voltou: | " + this.currentToken.getToken()
+                                + " | CLASSIFICACAO: " + this.currentToken.getClassificacao());
+        }else
             System.out.println("Tem como voltar n, chefe.");
     }
 
@@ -517,15 +519,13 @@ public class Syntax {
         
         if(variavel()){
             
-            nextToken();
-            
             if(currentToken.getClassificacao().equals("Atribuição")){
                 
                 nextToken();
                 
                 if(expressao()){
                     
-                    nextToken();
+                    //nextToken();
                     return true;
                     
                 }else{
