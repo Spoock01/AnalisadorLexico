@@ -23,8 +23,8 @@ public class Syntax {
     private void nextToken(){
          if(nextTokenIndex + 1 < tokens.size()){
              this.currentToken = tokens.get(nextTokenIndex++);
-             System.out.println("TOKEN ATUAL: " + this.currentToken.getToken()
-                                + "CLASSIFICACAO: " + this.currentToken.getClassificacao());
+             System.out.println("TOKEN ATUAL: | " + this.currentToken.getToken()
+                                + " | CLASSIFICACAO: " + this.currentToken.getClassificacao());
          }
              
          else
