@@ -489,7 +489,7 @@ public class Syntax {
     */
     public boolean listaComandos(){
         
-        if(comando()){
+        /*if(comando()){
             
             nextToken();
             
@@ -511,8 +511,37 @@ public class Syntax {
             
         }
 
-        System.out.println("Erro comando em listaComandos");
-        return false;
+        System.out.println("Erro comando em listaComandos");*/
+        return comando() && listaComandos_();
+    }
+    
+    public boolean listaComandos_(){
+        
+        if(currentToken.getToken().equals(";")){
+            
+            nextToken();
+            
+            if(comando())
+                if(listaComandos_()){
+                    
+                    nextToken();
+                    return true;
+                    
+                }else{
+                    
+                    System.out.println("Erro listaComandos_ em listaComandos_");
+                    return false;
+                    
+                }
+            else{
+                
+                System.out.println("Erro comando depois do ; em listaComandos_");
+                System.exit(0);
+                
+            }
+        }
+                
+        return true;
     }
 
     public boolean comando(){
@@ -644,7 +673,7 @@ public class Syntax {
         
         //Caso seja vazio, voltar para o token anterior
         //pq chama o proximo token no metodo comando
-        previousToken();
+        //previousToken();
         return true;
     }
 
