@@ -332,7 +332,9 @@ public class AnalisadorLexico {
         else if(token.matches(identifier)){
             if(isReservedWord(token))
                 result = "Palavra reservada";
-            else
+            else if(token.equalsIgnoreCase("true") || token.equalsIgnoreCase("false")){
+                result = "boolean";
+            }else
                 result = "Identificador";
         }else
             return;

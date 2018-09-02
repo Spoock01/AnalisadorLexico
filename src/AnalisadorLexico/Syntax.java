@@ -752,7 +752,8 @@ public class Syntax {
         */
         if(currentToken.getClassificacao().equals("Número inteiro") ||
            currentToken.getClassificacao().equals("Número real") ||
-           currentToken.getClassificacao().equals("Real 3D")){
+           currentToken.getClassificacao().equals("Real 3D")||
+           currentToken.getClassificacao().equals("boolean")){
             nextToken();
             return true;
         }else if(currentToken.getClassificacao().equals("Identificador")){
