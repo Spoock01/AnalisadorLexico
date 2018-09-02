@@ -109,10 +109,9 @@ public class Syntax {
         if(this.currentToken.getToken().equals("var")){
             nextToken();
             return listaDeclaracaoVariaveis();
+        }else{
+            return true;
         }
-
-        return false;
-
     }
     
     public boolean listaDeclaracaoVariaveis_(){
