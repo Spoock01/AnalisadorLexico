@@ -242,7 +242,10 @@ public class Syntax {
     
    public boolean declaracaoSubprogramas(){
        
-       return declaracaoSubprogramas_();
+       if(declaracaoSubprogramas_()){
+           return true;
+       }
+       return true;
        
    }
    
@@ -250,7 +253,7 @@ public class Syntax {
        
        if(declaracaoSubprograma()){
            
-           nextToken();
+           //nextToken();
            
            if(currentToken.getToken().equals(";")){
                
@@ -272,72 +275,38 @@ public class Syntax {
    public boolean declaracaoSubprograma(){
        
        if(currentToken.getToken().equals("procedure")){
-           
            nextToken();
-           
            if(currentToken.getClassificacao().equals("Identificador")){
-               
                 nextToken();
-                
                 if(argumentos()){
-                   
                     if(currentToken.getToken().equals(";")){
-                       
                         nextToken();
-                       
                         if(declaracaoVariaveis()){
-
                             if(declaracaoSubprogramas()){
-
                                 if(comandoComposto()){
-
                                     return true;
-
                                 }else{
-
                                     System.out.println("Erro comandoComposto em declaracaoSubprograma");
                                     return false;
-
                                 }    
-
-
                             }else{
-
                                 System.out.println("Erro declaracaoSubprogramas em declaracaoVariaveis");
                                 return false;
-
                             }
-
-                        }/*else{
-                            
-                            System.out.println("Erro declaracaoVariaveis em ;");
-                            return false;
-                            
-                        }*/
-                       
+                        }
                     }else{
-                        
                         System.out.println("Erro ; em argumentos");
                         return false;
-                        
                     } 
-                   
                }else{
-                   
                    System.out.println("Tem alguma coisa errada nos argumentos!!");
                    return false;
-                   
                }
-               
            }else{
-               
                System.out.println("Faltou o identificador, moral!!");
                return false;
-               
            }
-           
        }
-       
        return false;
        
    }
