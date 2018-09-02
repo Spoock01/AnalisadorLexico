@@ -284,7 +284,7 @@ public class Syntax {
                
                 if(argumentos()){
                    
-                   nextToken();
+                   //nextToken();
                    
                     if(currentToken.getToken().equals(";")){
                        
@@ -292,15 +292,15 @@ public class Syntax {
                        
                         if(declaracaoVariaveis()){
 
-                            nextToken();
+                            //nextToken();
 
                             if(declaracaoSubprogramas()){
 
-                                nextToken();
+                                //nextToken();
 
                                 if(comandoComposto()){
 
-                                    nextToken();
+                                    //nextToken();
                                     return true;
 
                                 }else{
@@ -360,7 +360,7 @@ public class Syntax {
            
            if(listaParametros()){
                
-               nextToken();
+               //nextToken();
                
                if(currentToken.getToken().equals(")")){
                    
@@ -400,7 +400,7 @@ public class Syntax {
        
        if(listaIdentificadores()){
            
-           nextToken();
+           //nextToken();
            
            if(currentToken.getToken().equals(":")){
                
@@ -408,7 +408,7 @@ public class Syntax {
                
                if(tipo()){
                    
-                   nextToken();
+                   //nextToken();
                    
                    if(currentToken.getToken().equals(";")){
                        
