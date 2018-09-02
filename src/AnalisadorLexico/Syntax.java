@@ -41,7 +41,7 @@ public class Syntax {
 
         nextToken();
 
-        if(currentToken.getToken().equals("Program")){
+        if(currentToken.getToken().equals("program")){
 
             nextToken();
 
@@ -83,9 +83,9 @@ public class Syntax {
         if(listaIdentificadores()){
             if(currentToken.getToken().equals(":")){
                 nextToken();
-                if(currentToken.getClassificacao().equals("Número inteiro") ||
-                   currentToken.getClassificacao().equals("Número real") ||
-                   currentToken.getClassificacao().equals("Real 3D")){
+                if(currentToken.getToken().equals("integer") ||
+                   currentToken.getToken().equals("real") ||
+                   currentToken.getToken().equals("boolean")){
                     nextToken();
                     if(currentToken.getToken().equals(";")){
                         nextToken();
@@ -120,9 +120,9 @@ public class Syntax {
         if(listaIdentificadores()){
             if(currentToken.getToken().equals(":")){
                 nextToken();
-                if(currentToken.getClassificacao().equals("Número inteiro") ||
-                   currentToken.getClassificacao().equals("Número real") ||
-                   currentToken.getClassificacao().equals("Real 3D")){
+                if(currentToken.getToken().equals("integer") ||
+                   currentToken.getToken().equals("real") ||
+                   currentToken.getToken().equals("boolean")){
                     nextToken();
                     if(currentToken.getToken().equals(";")){
                         nextToken();
