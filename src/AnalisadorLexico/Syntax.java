@@ -21,8 +21,12 @@ public class Syntax {
     }
 
     private void nextToken(){
-         if(nextTokenIndex + 1 < tokens.size())
+         if(nextTokenIndex + 1 < tokens.size()){
              this.currentToken = tokens.get(nextTokenIndex++);
+             System.out.println("TOKEN ATUAL: " + this.currentToken.getToken()
+                                + "CLASSIFICACAO: " + this.currentToken.getClassificacao());
+         }
+             
          else
              System.out.println("É só isso\n"
                              + "não tem mais jeito\n"
@@ -64,11 +68,78 @@ public class Syntax {
         return false;
 
     }
+    
+    public boolean listaDeclaracaoVariaveis_(){
+        // TA F0D4
+        if(listaIdentificadores()){
+            if(currentToken.getToken().equals(":")){
+                nextToken();
+                if(currentToken.getClassificacao().equals("Número inteiro") ||
+                   currentToken.getClassificacao().equals("Número real") ||
+                   currentToken.getClassificacao().equals("Real 3D")){
+                    nextToken();
+                    if(currentToken.getToken().equals(";")){
+                        nextToken();
+                        if(listaDeclaracaoVariaveis_()){
+                            return true;
+                        }else{
+                            System.out.println("Esperando listaDeclaracaoVariaveis_ em listaDeclaracaoVariaveis");
+                            return false;
+                        }
+                        
+                    }else{
+                        System.out.println("Erro, esperando listaDeclaracaoVariaveis_");
+                        return false;
+                    }
+                }else{
+                    System.out.println("Erro esperando tipo em listaDeclaracaoVariaveis");
+                    return false;
+                }
+            }else{
+                System.out.println("Esperando : em listaDeclaracaoVariaveis");
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
+    
 
     public boolean listaDeclaracaoVariaveis(){
         // TA F0D4
-
-        return true;
+        
+        if(listaIdentificadores()){
+            if(currentToken.getToken().equals(":")){
+                nextToken();
+                if(currentToken.getClassificacao().equals("Número inteiro") ||
+                   currentToken.getClassificacao().equals("Número real") ||
+                   currentToken.getClassificacao().equals("Real 3D")){
+                    nextToken();
+                    if(currentToken.getToken().equals(";")){
+                        nextToken();
+                        if(listaDeclaracaoVariaveis_()){
+                            return true;
+                        }else{
+                            System.out.println("Esperando listaDeclaracaoVariaveis_ em listaDeclaracaoVariaveis");
+                            return false;
+                        }
+                        
+                    }else{
+                        System.out.println("Erro, esperando listaDeclaracaoVariaveis_");
+                        return false;
+                    }
+                }else{
+                    System.out.println("Erro esperando tipo em listaDeclaracaoVariaveis");
+                    return false;
+                }
+            }else{
+                System.out.println("Esperando : em listaDeclaracaoVariaveis");
+                return false;
+            }
+        }else{
+            System.out.println("Esperando lista de identificadores em listaDeclaracaoVariaveis");
+            return false;
+        }
     }
     
     public boolean listaIdentificadores_(){
@@ -399,7 +470,7 @@ public class Syntax {
 
         if(expressaoSimples()){
             if(opRelacional() && expressaoSimples()){
-                nextToken();
+                //nextToken();
                 return true;
             }else{
                 nextToken();
