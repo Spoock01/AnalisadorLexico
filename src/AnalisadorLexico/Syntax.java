@@ -92,7 +92,7 @@ public class Syntax {
                         if(listaDeclaracaoVariaveis_()){
                             return true;
                         }else{
-                            System.out.println("Esperando listaDeclaracaoVariaveis_ em listaDeclaracaoVariaveis");
+                            System.out.println("Esperando listaDeclaracaoVariaveis_ em listaDeclaracaoVariaveis_");
                             return false;
                         }
                         
@@ -101,11 +101,11 @@ public class Syntax {
                         return false;
                     }
                 }else{
-                    System.out.println("Erro esperando tipo em listaDeclaracaoVariaveis");
+                    System.out.println("Erro esperando tipo em listaDeclaracaoVariaveis_");
                     return false;
                 }
             }else{
-                System.out.println("Esperando : em listaDeclaracaoVariaveis");
+                System.out.println("Esperando : em listaDeclaracaoVariaveis_");
                 return false;
             }
         }else{
