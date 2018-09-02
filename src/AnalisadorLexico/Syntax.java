@@ -446,7 +446,12 @@ public class Syntax {
             
         }
         
-        return listaComandos();
+        if(listaComandos()){
+            return true;
+        }else{
+            return false;
+        }
+            
 
     }
     
@@ -486,7 +491,7 @@ public class Syntax {
     }
 
     public boolean comando(){
-        System.out.println(currentToken.getToken()+" O QUE TEM AQUICOMANDO");
+       
         if(variavel()){
             
             if(currentToken.getClassificacao().equals("Atribuição")){
@@ -563,10 +568,8 @@ public class Syntax {
             }
             
         }else if(currentToken.getToken().equals("while")){
-            
+            nextToken();
             if(expressao()){
-                
-                nextToken();
                 
                 if(currentToken.getToken().equals("do")){
                     
@@ -575,7 +578,7 @@ public class Syntax {
                     //Acho que vai ficar em um loop
                     if(comando()){
                         
-                        nextToken();
+                        //nextToken();
                         return true;
                         
                     }else{
@@ -619,9 +622,9 @@ public class Syntax {
         if(currentToken.getClassificacao().equals("Identificador")){
             nextToken();
             return true;
-        }
-            System.out.println("DEU PAU NA VARIAVEL! Esperando Identificador.");
+        }else{
             return false;
+        }
     }
 
     public boolean ativacaoProcedimento(){
@@ -667,10 +670,8 @@ public class Syntax {
 
         if(expressaoSimples()){
             if(opRelacional() && expressaoSimples()){
-                //nextToken();
                 return true;
             }else{
-                nextToken();
                 return true;
             }
         }else{
@@ -796,7 +797,7 @@ public class Syntax {
         }else if(currentToken.getToken().equals("(")){
             nextToken();
             if(expressao()){
-                nextToken();
+                //nextToken();
                 if(currentToken.getToken().equals(")")){
                     nextToken();
                     return true;
@@ -827,7 +828,7 @@ public class Syntax {
     }
 
     public boolean opRelacional(){
-         if(currentToken.getToken().equals("Operador relacional")){
+         if(currentToken.getClassificacao().equals("Operador relacional")){
             nextToken();
             return true;
          }    
