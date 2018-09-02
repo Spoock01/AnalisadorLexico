@@ -14,7 +14,8 @@ public class Main {
         mfr.openFile();
         AnalisadorLexico al = new AnalisadorLexico(mfr.getFile(), mfr.getReservedWords());
         tokens = al.generateFile();
-        new Syntax(tokens).execute();
+        Syntax s = new Syntax(tokens);
+        s.execute();
         
     }
 }

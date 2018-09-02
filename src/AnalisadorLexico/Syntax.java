@@ -42,7 +42,6 @@ public class Syntax {
             System.exit(0);
 
         nextToken();
-
         if(currentToken.getToken().equals("program")){
 
             nextToken();
@@ -56,15 +55,14 @@ public class Syntax {
                     if(declaracaoVariaveis()){
                         
                         if(declaracaoSubprogramas()){
-                            
+
                             if(comandoComposto()){
-                                
+
                                 if(currentToken.getToken().equals(".")){
                                     
                                     System.out.println("Deu tudo certo, pode ir um cszinhi");
                                     
                                 }else{
-                                    
                                     System.out.println("Faltou o . no final do programa");
                                     System.exit(0);
                                     
@@ -281,10 +279,8 @@ public class Syntax {
            if(currentToken.getClassificacao().equals("Identificador")){
                
                 nextToken();
-               
+                
                 if(argumentos()){
-                   
-                   //nextToken();
                    
                     if(currentToken.getToken().equals(";")){
                        
@@ -292,15 +288,10 @@ public class Syntax {
                        
                         if(declaracaoVariaveis()){
 
-                            //nextToken();
-
                             if(declaracaoSubprogramas()){
-
-                                //nextToken();
 
                                 if(comandoComposto()){
 
-                                    //nextToken();
                                     return true;
 
                                 }else{
@@ -318,12 +309,12 @@ public class Syntax {
 
                             }
 
-                        }else{
+                        }/*else{
                             
                             System.out.println("Erro declaracaoVariaveis em ;");
                             return false;
                             
-                        }
+                        }*/
                        
                     }else{
                         
@@ -353,14 +344,12 @@ public class Syntax {
    }
 
    public boolean argumentos(){
-       
+
        if(currentToken.getToken().equals("(")){
            
            nextToken();
-           
+
            if(listaParametros()){
-               
-               //nextToken();
                
                if(currentToken.getToken().equals(")")){
                    
@@ -386,44 +375,18 @@ public class Syntax {
        return true;
        
    }
- 
-    /*
-    ###############################
-    ###############################
-    
-        PRESTAR ATENÇÃO NA RECURSÃO AQUI
-    
-    ###############################
-    ###############################
-    */
+
    public boolean listaParametros(){
-       
+
        if(listaIdentificadores()){
-           
-           //nextToken();
-           
+
            if(currentToken.getToken().equals(":")){
                
                nextToken();
                
                if(tipo()){
-                   
-                   //nextToken();
-                   
-                   if(currentToken.getToken().equals(";")){
-                       
-                       nextToken();
-                       
-                       if(!listaParametros()){
-                           
-                           System.out.println("Erro listaParametro em listaParametros");
-                           return false;                          
-                           
-                       }
-                       
-                   }
-                   
-                   return true;
+                         
+                   return listaParametros_();
                    
                }else{
                    
@@ -444,6 +407,48 @@ public class Syntax {
        System.out.println("Erro listaIdentificadoes em listaParametros");
        return false;
        
+   }
+   
+   public boolean listaParametros_(){
+       
+       if(currentToken.getToken().equals(";")){
+           
+           nextToken();
+           
+            if(listaIdentificadores()){
+
+                if(currentToken.getToken().equals(":")){
+
+                    nextToken();
+
+                    if(tipo()){
+
+                        return listaParametros_();
+
+                    }else{
+
+                        System.out.println("Erro tipo na listaParametros_");
+                        return false;
+
+                    }
+
+                }else{
+
+                    System.out.println("Erro : na listaParametros_");
+                    return false;
+
+                }
+
+            }else{
+                
+                System.out.println("Erro listaIdentificador em listaParametros_");
+                return false;
+                
+            }
+           
+       }
+       
+       return true;
    }
 
    public boolean comandoComposto(){
@@ -468,8 +473,7 @@ public class Syntax {
         
         //Caso não tenha nada
         if(currentToken.getToken().equals("end")){
-            
-            //previousToken();
+
             return true;
             
         }
@@ -478,41 +482,10 @@ public class Syntax {
 
     }
     
-    /*
-    ###############################
-    ###############################
-    
-        PRESTAR ATENÇÃO NA RECURSÃO AQUI
-    
-    ###############################
-    ###############################
-    */
     public boolean listaComandos(){
-        
-        /*if(comando()){
-            
-            nextToken();
-            
-            if(currentToken.getToken().equals(";")){
-                
-                nextToken();
-                
-                //So da erro se a listaComando tiver errado
-                if(!listaComandos()){
-                    
-                    System.out.println("Erro no listaComandos em listaComandos");
-                    return false;
-                    
-                }
-                
-            }
-            
-            return true;
-            
-        }
 
-        System.out.println("Erro comando em listaComandos");*/
         return comando() && listaComandos_();
+        
     }
     
     public boolean listaComandos_(){
@@ -545,7 +518,7 @@ public class Syntax {
     }
 
     public boolean comando(){
-        
+        System.out.println(currentToken.getToken()+" O QUE TEM AQUICOMANDO");
         if(variavel()){
             
             if(currentToken.getClassificacao().equals("Atribuição")){
@@ -671,9 +644,6 @@ public class Syntax {
             
         }
         
-        //Caso seja vazio, voltar para o token anterior
-        //pq chama o proximo token no metodo comando
-        //previousToken();
         return true;
     }
 

@@ -6,7 +6,7 @@ var oi: integer;
 procedure oi (oi:integer; td:real);
     begin
 
-    end;
+    end
 
     begin
         xau := (220);
