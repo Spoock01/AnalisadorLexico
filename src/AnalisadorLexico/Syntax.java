@@ -469,7 +469,7 @@ public class Syntax {
         //Caso não tenha nada
         if(currentToken.getToken().equals("end")){
             
-            previousToken();
+            //previousToken();
             return true;
             
         }
@@ -548,7 +548,7 @@ public class Syntax {
             
             if(expressao()){
                 
-                nextToken();
+                //nextToken();
                 
                 if(currentToken.getToken().equals("then")){
                     
@@ -557,7 +557,7 @@ public class Syntax {
                     //acho que pode ficar num loop aqui
                     if(comando()){
                         
-                        nextToken();
+                        //nextToken();
                         
                         if(parteElse()){
                             
