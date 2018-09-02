@@ -50,7 +50,44 @@ public class Syntax {
 
                 if(currentToken.getToken().equals(";")){
                     nextToken();
-                    declaracaoVariaveis();
+                    
+                    if(declaracaoVariaveis()){
+                        
+                        if(declaracaoSubprogramas()){
+                            
+                            if(comandoComposto()){
+                                
+                                if(currentToken.getToken().equals(".")){
+                                    
+                                    System.out.println("Deu tudo certo, pode ir um cszinhi");
+                                    
+                                }else{
+                                    
+                                    System.out.println("Faltou o . no final do programa");
+                                    System.exit(0);
+                                    
+                                }
+                                
+                            }else{
+                                
+                                System.out.println("Erro comandoComposto no escopo principal");
+                                System.exit(0);
+                                
+                            }
+                            
+                        }else{
+                            
+                            System.out.println("Erro declaracaoSubprogramas no escopo principal");
+                            
+                        }
+                        
+                    }else{
+                        
+                        System.out.println("Erro declaracaoVariaveis no escopo principal");
+                        System.exit(0);
+                        
+                    }
+
                 }else{
                     System.out.println("Esperando ; ao fim do identificador de programa.");
                     System.exit(0);
