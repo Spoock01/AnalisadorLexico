@@ -50,11 +50,20 @@ public class Syntax {
 
                 if(currentToken.getToken().equals(";")){
                     nextToken();
-
-
+                    declaracaoVariaveis();
+                }else{
+                    System.out.println("Esperando ; ao fim do identificador de programa.");
+                    System.exit(0);
                 }
+                    
 
+            }else{
+                System.out.println("Esperando identificador de programa");
+                System.exit(0);
             }
+        }else{
+            System.out.println("Esperando palavra reservada Program");
+            System.exit(0);
         }
     }
 
