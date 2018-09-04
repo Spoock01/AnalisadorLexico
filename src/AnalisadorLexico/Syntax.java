@@ -6,34 +6,20 @@ public class Syntax {
    private ArrayList<Table> tokens;
    private Table currentToken;
    private int nextTokenIndex;
+   private final boolean showTokens = false;
    
     public Syntax(ArrayList<Table> tokens){
         this.tokens = tokens;
         this.nextTokenIndex = 0;
     }
 
-    private void previousToken(){
-
-        if(nextTokenIndex - 1 >= 0){
-            this.currentToken = tokens.get(--nextTokenIndex);
-            System.out.println("TOKEN Voltou: | " + this.currentToken.getToken()
-                                + " | CLASSIFICACAO: " + this.currentToken.getClassificacao());
-        }else
-            System.out.println("Tem como voltar n, chefe.");
-    }
-
     private void nextToken(){
-         if(nextTokenIndex + 1 <= tokens.size()){
+         if(nextTokenIndex + 1 <= tokens.size())
              this.currentToken = tokens.get(nextTokenIndex++);
+             
+         if(this.showTokens)
              System.out.println("TOKEN ATUAL: | " + this.currentToken.getToken()
                                 + " | CLASSIFICACAO: " + this.currentToken.getClassificacao());
-         }
-             
-         else
-             System.out.println("É só isso\n"
-                             + "não tem mais jeito\n"
-                             + "Acabou\n"
-                             + "Boa sorte");
     }
 
     public void execute(){
@@ -43,65 +29,36 @@ public class Syntax {
 
         nextToken();
         if(currentToken.getToken().equals("program")){
-
             nextToken();
-
             if(currentToken.getClassificacao().equals("Identificador")){
                 nextToken();
-
-                if(currentToken.getToken().equals(";")){
+                if(currentToken.getToken().equals(";"))
                     nextToken();
-                    
-                    if(declaracaoVariaveis()){
-                        
-                        if(declaracaoSubprogramas()){
-
-                            if(comandoComposto()){
-
-                                if(currentToken.getToken().equals(".")){
-                                    
-                                    System.out.println("Deu tudo certo!!");
-                                    
-                                }else{
-                                    System.out.println("Faltou o . no final do programa");
-                                    System.exit(0);
-                                    
-                                }
-                                
-                            }else{
-                                
-                                System.out.println("Erro comandoComposto no escopo principal");
-                                System.exit(0);
-                                
-                            }
-                            
-                        }else{
-                            
-                            System.out.println("Erro declaracaoSubprogramas no escopo principal");
-                            
-                        }
-                        
-                    }else{
-                        
-                        System.out.println("Erro declaracaoVariaveis no escopo principal");
-                        System.exit(0);
-                        
-                    }
-
-                }else{
+                else
                     System.out.println("Esperando ; ao fim do identificador de programa.");
-                    System.exit(0);
-                }
-                    
-
-            }else{
+                
+            }else
                 System.out.println("Esperando identificador de programa");
-                System.exit(0);
-            }
+            
         }else{
-            System.out.println("Esperando palavra reservada Program");
-            System.exit(0);
+            System.out.println("Esperando palavra reservada \" program \"");
         }
+        
+        if(declaracaoVariaveis()){
+            if(declaracaoSubprogramas()){
+                if(comandoComposto())
+                    if(currentToken.getToken().equals("."))
+                        System.out.println("Deu tudo certo!!");
+                    else
+                        System.out.println("Faltou o . no final do programa");
+               else
+                    System.out.println("Erro comandoComposto no escopo principal");
+            }else
+                System.out.println("Erro declaracaoSubprogramas no escopo principal");
+
+        }else
+            System.out.println("Erro declaracaoVariaveis no escopo principal");
+        
     }
 
     public boolean declaracaoVariaveis(){
@@ -194,7 +151,6 @@ public class Syntax {
             if(currentToken.getClassificacao().equals("Identificador")){
                 nextToken();
                 if(listaIdentificadores_()){
-                    nextToken();
                     return true;
                 }else{
                     System.out.println("Esperando listaIdentificadores_ em listaIdentificadores_");
@@ -344,29 +300,18 @@ public class Syntax {
    public boolean listaParametros(){
 
        if(listaIdentificadores()){
-
            if(currentToken.getToken().equals(":")){
-               
                nextToken();
-               
                if(tipo()){
-                         
                    return listaParametros_();
-                   
                }else{
-                   
                    System.out.println("Erro tipo na listaParametros");
                    return false;
-                   
                }
-               
            }else{
-               
                System.out.println("Erro : na listaParametros");
                return false;
-               
            }
-           
        }
        
        System.out.println("Erro listaIdentificadoes em listaParametros");
@@ -377,42 +322,25 @@ public class Syntax {
    public boolean listaParametros_(){
        
        if(currentToken.getToken().equals(";")){
-           
            nextToken();
-           
             if(listaIdentificadores()){
-
                 if(currentToken.getToken().equals(":")){
-
                     nextToken();
-
                     if(tipo()){
-
                         return listaParametros_();
-
                     }else{
-
                         System.out.println("Erro tipo na listaParametros_");
                         return false;
-
                     }
-
                 }else{
-
                     System.out.println("Erro : na listaParametros_");
                     return false;
-
                 }
-
             }else{
-                
                 System.out.println("Erro listaIdentificador em listaParametros_");
                 return false;
-                
             }
-           
        }
-       
        return true;
    }
 
@@ -436,155 +364,95 @@ public class Syntax {
     public boolean comandosOpcionais(){
         
         //Caso não tenha nada
-        if(currentToken.getToken().equals("end")){
-
+        if(currentToken.getToken().equals("end"))
             return true;
-            
-        }
         
         if(listaComandos()){
             return true;
         }else{
             return false;
         }
-            
-
     }
     
     public boolean listaComandos(){
-
         return comando() && listaComandos_();
-        
     }
     
     public boolean listaComandos_(){
         
         if(currentToken.getToken().equals(";")){
-            
             nextToken();
-            
             if(comando())
                 if(listaComandos_()){
-                    
                     return true;
-                    
                 }else{
-                    
                     System.out.println("Erro listaComandos_ em listaComandos_");
                     return false;
-                    
                 }
-            
         }
-                
         return true;
     }
 
     public boolean comando(){
        
         if(variavel()){
-            
             if(currentToken.getClassificacao().equals("Atribuição")){
-                
                 nextToken();
-                
                 if(expressao()){
-                    
                     return true;
-                    
                 }else{
-                    
                     System.out.println("Erro na expressão em comando");
                     return false;
-                    
                 }
-                
             }else{
-                
                 System.out.println("Erro na atribuição em comando");
                 return false;
-                
             }
-            
         }else if(currentToken.getToken().equals("if")){
-            
             nextToken();
-            
             if(expressao()){
-                
                 if(currentToken.getToken().equals("then")){
-                    
                     nextToken();
-                    
                     //acho que pode ficar num loop aqui
                     if(comando()){
-                        
                         if(parteElse()){
-                            
                             nextToken();
                             return true;
-                            
                         }else{
-                            
                             System.out.println("Erro no else em comando");
                             return false;
-                            
                         }
-                        
                     }else{
-                        
                         System.out.println("Erro comando em comando");
                         return false;
-                        
                     }
-                    
                 }else{
-                    
                     System.out.println("Erro then em comando");
                     return false;
-                    
                 }
-                
             }else{
-                
                 System.out.println("Erro expressao if em comando");
                 return false;
-                
             }
-            
         }else if(currentToken.getToken().equals("while")){
             nextToken();
             if(expressao()){
-                
                 if(currentToken.getToken().equals("do")){
-                    
                     nextToken();
-                    
                     if(comando()){
-                        
                         return true;
-                        
                     }else{
-                        
                         System.out.println("Erro comando while em comando");
                         return false;
-                        
                     }
-                    
                 }else{
-                    
                     System.out.println("Erro do em comando");
                     return false;
-                    
                 }
-                
             }else{
-                
                 System.out.println("Erro expressao while em comando");
                 return false;
-                
             }
-            
         }
         
         if(ativacaoProcedimento()){
@@ -744,12 +612,6 @@ public class Syntax {
     
     public boolean fator(){
 
-
-        /*
-             +++++++++++++++++++++++++++++++++++++++
-             FALTANDO TRATAR O ''' TRUE E FALSE '''
-             +++++++++++++++++++++++++++++++++++++++
-        */
         if(currentToken.getClassificacao().equals("Número inteiro") ||
            currentToken.getClassificacao().equals("Número real") ||
            currentToken.getClassificacao().equals("Real 3D")||
@@ -820,10 +682,6 @@ public class Syntax {
             nextToken();
             return true;
          }    
-         //else{
-             //previousToken();
-           //  System.out.println("Deu pau! esperando operador relacional");
-        // }
 
          return false;
     }
@@ -833,10 +691,6 @@ public class Syntax {
             nextToken();
             return true;
          }    
-         //else{
-         //    System.out.println("Deu pau! esperando operador aditivo");
-             //previousToken();
-        // }
         return false;
     }
 
@@ -845,10 +699,6 @@ public class Syntax {
            nextToken();
            return true;
         }    
-        //else{
-        //    System.out.println("Deu pau! esperando operador multiplicativo");
-       // }
-
        return false;
    }
 }

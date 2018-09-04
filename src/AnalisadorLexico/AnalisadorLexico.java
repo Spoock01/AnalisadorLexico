@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 public class AnalisadorLexico {
     
+    private final boolean showTable = false;
     private ArrayList<String> file;
     private ArrayList<String> reservedWords;
     private ArrayList<Table> table;
@@ -356,8 +357,9 @@ public class AnalisadorLexico {
 
         }
         
-        for(int i = 0; i < table.size(); i++)
-            System.out.println(table.get(i).toString());
+        if(showTable)
+            for(int i = 0; i < table.size(); i++)
+                System.out.println(table.get(i).toString());
         
     }
 }

@@ -5,8 +5,8 @@ var oi: integer;
     xau: boolean;
 procedure oi (oi:integer; td:real);
     begin
-        oi := true;
-    end
+
+    end;
 
     begin
         xau := (220);
