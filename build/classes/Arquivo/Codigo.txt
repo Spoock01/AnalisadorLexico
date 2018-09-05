@@ -5,11 +5,11 @@ var oi: integer;
     xau: boolean;
 procedure oi (oi:integer; td:real);
     begin
-
-    end;
+        oi := true;
+    end
 
     begin
-        xau := (220);
+        xau := (220)
         while 1 > 4 do
            begin
 
