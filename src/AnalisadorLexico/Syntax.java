@@ -453,6 +453,25 @@ public class Syntax {
                 System.out.println("Erro expressao while em comando");
                 return false;
             }
+        }else if(currentToken.getToken().equals("do")){
+            nextToken();
+            if(comando()){
+                if(currentToken.getToken().equals("while")){
+                    nextToken();
+                    if(expressao()){
+                        return true;
+                    }else{
+                        System.out.println("Esperando expressao");
+                        return false;
+                    }
+                }else{
+                    System.out.println("Esperando while");
+                    return false;
+                }
+            }else{
+                System.out.println("Esperando comando");
+                return false;
+            }
         }
         
         if(ativacaoProcedimento()){

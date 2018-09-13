@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class AnalisadorLexico {
     
-    private final boolean showTable = false;
+    private final boolean showTable = true;
     private ArrayList<String> file;
     private ArrayList<String> reservedWords;
     private ArrayList<Table> table;
@@ -150,11 +150,11 @@ public class AnalisadorLexico {
                         break;
                     case 1:
                         stringBuilder = new StringBuilder(aux);
-                        if(aux.charAt(j - 1 > 0 ? j - 1 : 0) != ' '){
+                        if(aux.charAt((j - 1) > 0 ? (j - 1) : 0) != ' '){
                             stringBuilder.insert(j , ' ');
                             size++;
-                        }   if (aux.charAt(j+3) != ' '){
-                            stringBuilder.insert(j+3 , ' ');
+                        }   if (aux.charAt(j+2) != ' '){
+                            stringBuilder.insert(j+2 , ' ');
                             size++;
                         }   aux = stringBuilder.toString();
                         length = aux.length();

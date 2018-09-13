@@ -1,20 +1,16 @@
-program oi;   {programa exemplo
-fefesfsefsefsf}
+program teste;
+var
+    x: real;
+procedure limpar (y:integer);
+var
+    z: boolean;
+begin
+   while xitadoGGizi > 123456 do
+    variavel := true
+end
 
-var oi: integer;
-    xau: boolean;
-procedure oi (oi:integer; td:real);
-    begin
-        oi := true;
-    end
-
-    begin
-        xau := (220)
-        while 1 > 4 do
-           begin
-
-           end
-
-    end
-
-    .
+begin
+    do
+        x := 3000123123123123
+    while (x < 123456) 
+end.
