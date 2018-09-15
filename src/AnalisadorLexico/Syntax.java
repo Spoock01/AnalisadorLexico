@@ -6,7 +6,7 @@ public class Syntax {
    private ArrayList<Table> tokens;
    private Table currentToken;
    private int nextTokenIndex;
-   private final boolean showTokens = true;
+   private final boolean showTokens = false;
    
     public Syntax(ArrayList<Table> tokens){
         this.tokens = tokens;
@@ -559,7 +559,7 @@ public class Syntax {
         if(opAditivo()){
             if(termo()){
                 if(expressaoSimples_()){
-                    nextToken();
+                    //nextToken();
                     return true;
                 }else{
                     System.out.println("deu erro em expressaoSimples_() esperando expressaoSimples_()");

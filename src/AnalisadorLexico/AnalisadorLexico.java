@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class AnalisadorLexico {
     
-    private final boolean showTable = false;
+    private final boolean showTable = true;
     private ArrayList<String> file;
     private ArrayList<String> reservedWords;
     private ArrayList<Table> table;
