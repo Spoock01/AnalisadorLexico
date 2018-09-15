@@ -6,7 +6,7 @@ public class Syntax {
    private ArrayList<Table> tokens;
    private Table currentToken;
    private int nextTokenIndex;
-   private final boolean showTokens = false;
+   private final boolean showTokens = true;
    
     public Syntax(ArrayList<Table> tokens){
         this.tokens = tokens;
@@ -706,7 +706,7 @@ public class Syntax {
     }
 
     public boolean opAditivo(){
-         if(currentToken.getToken().equals("Operador aditivo")){
+         if(currentToken.getClassificacao().equals("Operador aditivo")){
             nextToken();
             return true;
          }    
@@ -714,7 +714,7 @@ public class Syntax {
     }
 
     public boolean opMultiplicativo(){
-        if(currentToken.getToken().equals("Operador multiplicativo")){
+        if(currentToken.getClassificacao().equals("Operador multiplicativo")){
            nextToken();
            return true;
         }    

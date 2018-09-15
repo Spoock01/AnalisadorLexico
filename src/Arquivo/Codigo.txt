@@ -1,16 +1,24 @@
-program teste;
-var
-    x: real;
-procedure limpar (y:integer);
-var
-    z: boolean;
-begin
-   while xitadoGGizi > 123456 do
-    variavel := true
-end
+program exemplo;
 
+var a, b: integer;
+
+    procedure p (x:integer);
+    var b,c : integer;
+    begin
+        b := x + y;
+    end
+
+    procedure q;
+    var c,d: integer;
+    
+        procedure r (y:char);
+        var e,f: integer;
+        begin
+            a:= y;
+        end
+    begin
+        c:=4;
+    end
 begin
-    do
-        x := 3000123123123123
-    while (x < 123456) 
+    a:=b;
 end.
