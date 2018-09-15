@@ -149,16 +149,22 @@ public class AnalisadorLexico {
                         length = aux.length();
                         break;
                     case 1:
+                        
                         stringBuilder = new StringBuilder(aux);
-                        if(aux.charAt((j - 1) > 0 ? (j - 1) : 0) != ' '){
+
+                        if(j > 0){
+                            stringBuilder.insert(j+2 , ' ');
                             stringBuilder.insert(j , ' ');
-                            size++;
-                        }   if (aux.charAt(j+2) != ' '){
+                            size+=2;
+                        }else{
                             stringBuilder.insert(j+2 , ' ');
                             size++;
-                        }   aux = stringBuilder.toString();
+                        }
+                        
+                        aux = stringBuilder.toString();
                         length = aux.length();
                         break;
+                        
                     default:
                         break;
                 }
