@@ -45,6 +45,17 @@ public class Syntax {
         System.out.println("");
     }
     
+    void checkDeclaration(){
+        
+        for(int i = 0; i < symbolTable.size(); i++){
+            if(currentToken.getToken().equals(symbolTable.get(i).getIdentifier())){
+                return;
+            }
+        }
+        System.out.println("{" + currentToken.getToken() + "} undeclared. Line: "+ currentToken.getLine());
+        
+    }
+    
     void declaration(){
         IdentifierType pair = new IdentifierType(currentToken.getToken(), "undefined");
         //System.out.println("Declaring: " + currentToken.getToken());
@@ -575,6 +586,7 @@ public class Syntax {
 
     public boolean variavel(){
         if(currentToken.getClassificacao().equals("Identificador")){
+            checkDeclaration();
             nextToken();
             return true;
         }else{

@@ -3,7 +3,7 @@ program exemplo;
 var a, b: integer;
 
     procedure p (x:integer);
-    var b,c : integer;
+    var b, c : integer;
     begin
         b:=x + y;
     end;
