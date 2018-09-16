@@ -10,20 +10,22 @@ public class Syntax {
    private int nextTokenIndex;
    private final boolean showTokens = false;
    private ArrayList<IdentifierType> symbolTable;
+   private ArrayList<Table> variableDeclaration; //Para poder atribuir os tipos a ele na hora da declaração
    
     public Syntax(ArrayList<Table> tokens, ArithmeticTable arithmeticTable){
         this.tokens = tokens;
         this.nextTokenIndex = 0;
         this.arithmeticTable = arithmeticTable;
         symbolTable = new ArrayList<>();
+        variableDeclaration = new ArrayList<>();
         //symbolTable.add(new IdentifierType("$", "scope identifier"));
     }
 
     void setSymbolsType(){
         
-        for(int i = symbolTable.size(); i>=0 ;i--){
+        for(int i = symbolTable.size() - 1; i>=0 ;i--){
             if(symbolTable.get(i).getType().equals("undefined")){
-  
+
                 if(currentToken.getClassificacao().endsWith("Número inteiro"))
                     symbolTable.get(i).setType("integer");
                 else if(currentToken.getClassificacao().endsWith("Número real")){
@@ -38,9 +40,30 @@ public class Syntax {
         
     }
     
+    //Atribuir a todas as variáveis o seu tipo
+    //Ia colocar esse método por cima do outro, mas não sabia se tu ia usar
+    //então achei melhor criar um novo
+    void setSymbolType_(){
+        
+        for(int i = 0; i < variableDeclaration.size(); i++)
+            for(int j = symbolTable.size() - 1; j >= 0; j--){
+                
+                if(variableDeclaration.get(i).getToken().equals(symbolTable.get(j).getIdentifier())){
+                    
+                    symbolTable.get(j).setType(currentToken.getToken());
+                    break;
+                    
+                }
+                
+            }
+        
+        printDeclaredVariables();
+    }
+    
     void printDeclaredVariables(){
         for(int i = 0; i < symbolTable.size(); i++){
-            System.out.print(symbolTable.get(i).getIdentifier() + " ");
+            //System.out.print(symbolTable.get(i).getIdentifier() + " ");
+            System.out.println(symbolTable.get(i).getIdentifier() + " "+symbolTable.get(i).getType());
         }
         System.out.println("");
     }
@@ -162,7 +185,7 @@ public class Syntax {
                 nextToken();
                 if(currentToken.getToken().equals("integer") ||
                    currentToken.getToken().equals("real") ||
-                   currentToken.getToken().equals("boolean")){
+                   currentToken.getToken().equals("boolean")){                        
                     nextToken();
                     if(currentToken.getToken().equals(";")){
                         nextToken();
@@ -199,6 +222,8 @@ public class Syntax {
                 if(currentToken.getToken().equals("integer") ||
                    currentToken.getToken().equals("real") ||
                    currentToken.getToken().equals("boolean")){
+                    setSymbolType_();
+                    variableDeclaration.clear();
                     nextToken();
                     if(currentToken.getToken().equals(";")){
                         nextToken();
@@ -233,6 +258,7 @@ public class Syntax {
             nextToken();
             if(currentToken.getClassificacao().equals("Identificador")){
                 declaration();
+                variableDeclaration.add(currentToken);
                 nextToken();
                 if(listaIdentificadores_()){
                     return true;
@@ -253,6 +279,7 @@ public class Syntax {
     public boolean listaIdentificadores(){
         if(currentToken.getClassificacao().equals("Identificador")){
             declaration();
+            variableDeclaration.add(currentToken);
             nextToken();
             if(listaIdentificadores_()){
                 return true;
