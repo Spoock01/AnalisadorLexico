@@ -353,6 +353,7 @@ public class Syntax {
                         if(declaracaoVariaveis()){
                             if(declaracaoSubprogramas()){
                                 if(comandoComposto()){
+                                    exitScope();
                                     return true;
                                 }else{
                                     System.out.println("Erro comandoComposto em declaracaoSubprograma");
@@ -465,7 +466,6 @@ public class Syntax {
            nextToken();
            comandosOpcionais();
            if(currentToken.getToken().equals("end")){
-               exitScope();
                nextToken();
                return true;
             }else{
