@@ -1,0 +1,8 @@
+integer/integer/integer ok
+integer/real/integer not
+real/integer/integer not
+real/real/integer not
+integer/integer/real ok
+integer/real/real ok
+real/integer/real ok
+real/real/real ok

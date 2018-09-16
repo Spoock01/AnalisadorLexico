@@ -2,17 +2,88 @@ package AnalisadorLexico;
 
 import java.util.ArrayList;
 
+
 public class Syntax {
-   private ArrayList<Table> tokens;
+   private final ArrayList<Table> tokens;
+   private final ArithmeticTable arithmeticTable;
    private Table currentToken;
    private int nextTokenIndex;
    private final boolean showTokens = false;
+   private ArrayList<IdentifierType> symbolTable;
    
-    public Syntax(ArrayList<Table> tokens){
+    public Syntax(ArrayList<Table> tokens, ArithmeticTable arithmeticTable){
         this.tokens = tokens;
         this.nextTokenIndex = 0;
+        this.arithmeticTable = arithmeticTable;
+        symbolTable = new ArrayList<>();
+        //symbolTable.add(new IdentifierType("$", "scope identifier"));
     }
 
+    void setSymbolsType(){
+        
+        for(int i = symbolTable.size(); i>=0 ;i--){
+            if(symbolTable.get(i).getType().equals("undefined")){
+  
+                if(currentToken.getClassificacao().endsWith("Número inteiro"))
+                    symbolTable.get(i).setType("integer");
+                else if(currentToken.getClassificacao().endsWith("Número real")){
+                    symbolTable.get(i).setType("real");
+                }else if(currentToken.getClassificacao().endsWith("Real 3D")){
+                    symbolTable.get(i).setType("Real 3D");
+                }else if(currentToken.getClassificacao().endsWith("boolean")){
+                    symbolTable.get(i).setType("boolean");
+                }
+            }
+        }
+        
+    }
+    
+    void printDeclaredVariables(){
+        for(int i = 0; i < symbolTable.size(); i++){
+            System.out.print(symbolTable.get(i).getIdentifier() + " ");
+        }
+        System.out.println("");
+    }
+    
+    void declaration(){
+        IdentifierType pair = new IdentifierType(currentToken.getToken(), "undefined");
+        //System.out.println("Declaring: " + currentToken.getToken());
+        for(int i = symbolTable.size() - 1; i >= 0; i--){
+            if(symbolTable.get(i).getIdentifier().equals("$")){
+                symbolTable.add(pair);
+                break;
+            }else if(symbolTable.get(i).getIdentifier().equals(currentToken.getToken())){
+                System.out.println("{"+currentToken.getToken() + "} already declared!");
+                break;
+            }
+        }   
+        //printDeclaredVariables();
+    }
+    
+    public void enterScope(){
+        
+        //System.out.println("\n\nEntrando no escopo");
+        //printDeclaredVariables();
+        IdentifierType pair = new IdentifierType("$", "scope identifier");
+        symbolTable.add(pair);   
+        //printDeclaredVariables();
+    }
+    
+    public void exitScope(){
+
+        //System.out.println("\n\nSaindo do escopo");
+        //printDeclaredVariables();
+        for(int i = symbolTable.size() - 1; i >= 0; i--){
+            if(symbolTable.get(i).getIdentifier().equals("$")){
+                symbolTable.remove(i);
+                break;
+            }else
+                symbolTable.remove(i);
+        }
+        
+        //printDeclaredVariables();
+    }
+    
     private void nextToken(){
          if(nextTokenIndex + 1 <= tokens.size())
              this.currentToken = tokens.get(nextTokenIndex++);
@@ -29,8 +100,10 @@ public class Syntax {
 
         nextToken();
         if(currentToken.getToken().equals("program")){
+            enterScope();
             nextToken();
             if(currentToken.getClassificacao().equals("Identificador")){
+                declaration();
                 nextToken();
                 if(currentToken.getToken().equals(";"))
                     nextToken();
@@ -47,9 +120,9 @@ public class Syntax {
         if(declaracaoVariaveis()){
             if(declaracaoSubprogramas()){
                 if(comandoComposto())
-                    if(currentToken.getToken().equals("."))
+                    if(currentToken.getToken().equals(".")){
                         System.out.println("Deu tudo certo!!");
-                    else
+                    }else
                         System.out.println("Faltou o . no final do programa");
                else
                     System.out.println("Erro comandoComposto no escopo principal");
@@ -106,7 +179,6 @@ public class Syntax {
         }
     }
     
-
     public boolean listaDeclaracaoVariaveis(){
         // TA F0D4
         
@@ -149,6 +221,7 @@ public class Syntax {
         if(currentToken.getToken().equals(",")){
             nextToken();
             if(currentToken.getClassificacao().equals("Identificador")){
+                declaration();
                 nextToken();
                 if(listaIdentificadores_()){
                     return true;
@@ -168,6 +241,7 @@ public class Syntax {
 
     public boolean listaIdentificadores(){
         if(currentToken.getClassificacao().equals("Identificador")){
+            declaration();
             nextToken();
             if(listaIdentificadores_()){
                 return true;
@@ -228,8 +302,12 @@ public class Syntax {
    public boolean declaracaoSubprograma(){
        
        if(currentToken.getToken().equals("procedure")){
+           
+           enterScope();
+           
            nextToken();
            if(currentToken.getClassificacao().equals("Identificador")){
+                declaration();
                 nextToken();
                 if(argumentos()){
                     if(currentToken.getToken().equals(";")){
@@ -349,6 +427,7 @@ public class Syntax {
            nextToken();
            comandosOpcionais();
            if(currentToken.getToken().equals("end")){
+               exitScope();
                nextToken();
                return true;
             }else{
