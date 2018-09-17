@@ -76,13 +76,15 @@ public class Syntax {
                     
                 }
                 
-            }else{               
+            }else if(stackAssignment.get(0).getType().equals("boolean")){               
                 if(!stackAssignment.get(i).getType().equals("boolean")){
                     
                     System.out.println("Tu não estudou lógica com Andrei não?");
                     System.exit(0);
                     
                 }               
+            }else if(stackAssignment.get(0).getType().equals("unsigned")){
+                
             }           
         }
         
@@ -373,11 +375,12 @@ public class Syntax {
        
        if(currentToken.getToken().equals("procedure")){
            
-           enterScope();
+           //enterScope();
            
            nextToken();
            if(currentToken.getClassificacao().equals("Identificador")){
                 declaration();
+                enterScope();
                 nextToken();
                 if(argumentos()){
                     if(currentToken.getToken().equals(";")){
@@ -554,6 +557,9 @@ public class Syntax {
                     System.out.println("Erro na expressão em comando");
                     return false;
                 }
+            }else if(ativacaoProcedimento()){
+                checkOperation();
+                return true;
             }else{
                 System.out.println("Erro na atribuição em comando");
                 return false;
@@ -627,9 +633,7 @@ public class Syntax {
             }
         }
         
-        if(ativacaoProcedimento()){
-            return true;
-        }else if(comandoComposto()){
+        if(comandoComposto()){
             return true;
         }else{
             return false;
@@ -659,35 +663,31 @@ public class Syntax {
     }
 
     public boolean ativacaoProcedimento(){
-        if(currentToken.getClassificacao().equals("Identificador")){
-            checkDeclaration();
+        
+        if(currentToken.getToken().equals("(")){
             nextToken();
-            if(currentToken.getToken().equals("(")){
-                nextToken();
-                if(listaExpressoes()){
-                    if(currentToken.getToken().equals(")")){
-                        nextToken();
-                        return true;
-                    }else{
-                        System.out.println("Esperando ) em ativacao procedimento");
-                        return false;
-                    }
+            if(listaExpressoes()){
+                if(currentToken.getToken().equals(")")){
+                    nextToken();
+                    return true;
                 }else{
-                    System.out.println("Esperando listaExpressoes em ativacaoProcedimento");
+                    System.out.println("Esperando ) em ativacao procedimento");
                     return false;
                 }
             }else{
-                return true;
+                System.out.println("Esperando listaExpressoes em ativacaoProcedimento");
+                return false;
             }
         }else{
-            return false;
+            return true;
         }
+        
     }
 
     public boolean listaExpressoes(){
-        nextToken();
+        //nextToken();
         if(expressao()){
-            nextToken();
+            //nextToken();
         }else if(listaExpressoes()){
             nextToken();
         }else{

@@ -20,9 +20,9 @@ var a, b: integer;
             a:=y
         end
     begin
-        c:=4;
+        c:=4
     end;
 begin
-    p(1);
+    p(1.1);
     a:=b
 end.
