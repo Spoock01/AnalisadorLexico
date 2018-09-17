@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class AnalisadorLexico {
     
-    private final boolean showTable = false;
+    private final boolean showTable = true;
     private ArrayList<String> file;
     private ArrayList<String> reservedWords;
     private ArrayList<Table> table;
@@ -104,12 +104,16 @@ public class AnalisadorLexico {
     
     public int isSymbol(char c, char d){
         
-        if((c == ':' && d == '=') || (c  == '<' || d == '=') || 
-           (c == '>' && d == '=') || (c == '<' && d == '>'))
+
+        if((Character.toString(c).equals(":") && Character.toString(d).equals("=")) || 
+           (Character.toString(c).equals("<") && Character.toString(d).equals("=")) ||
+           (Character.toString(c).equals(">") && Character.toString(d).equals("=")) ||
+           (Character.toString(c).equals("<") && Character.toString(d).equals(">")))            
             return 1;
         
         else if(c == ',' || c == ';' || c == ':' || c == '(' || c == ')' ||
-                c == '/' || c == '*' || c == '+' || c == '-')
+                c == '/' || c == '*' || c == '+' || c == '-' || c == '<' || 
+                c == '>' || c == '=')
             return 0;
         
         return -1;
