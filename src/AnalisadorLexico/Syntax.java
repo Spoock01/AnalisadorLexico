@@ -827,6 +827,7 @@ public class Syntax {
         if(expressaoSimples()){
             if(opRelacional() && expressaoSimples()){
                 //checkOperation();
+                checkRelational();
                 return true;
             }else{
                 return true;
@@ -991,7 +992,6 @@ public class Syntax {
 
     public boolean opRelacional(){
          if(currentToken.getClassificacao().equals("Operador relacional")){
-            checkRelational();
             nextToken();
             return true;
          }    
