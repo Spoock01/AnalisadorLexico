@@ -11,6 +11,7 @@ public class Syntax {
    private final boolean showTokens = false;
    private ArrayList<IdentifierType> symbolTable;
    private ArrayList<Table> variableDeclaration; //Para poder atribuir os tipos a ele na hora da declaração
+   private ArrayList<IdentifierType> stackAssignment;
    
     public Syntax(ArrayList<Table> tokens, ArithmeticTable arithmeticTable){
         this.tokens = tokens;
@@ -18,31 +19,11 @@ public class Syntax {
         this.arithmeticTable = arithmeticTable;
         symbolTable = new ArrayList<>();
         variableDeclaration = new ArrayList<>();
+        stackAssignment = new ArrayList<>();
         //symbolTable.add(new IdentifierType("$", "scope identifier"));
     }
 
-    void setSymbolsType(){
-        
-        for(int i = symbolTable.size() - 1; i>=0 ;i--){
-            if(symbolTable.get(i).getType().equals("undefined")){
-
-                if(currentToken.getClassificacao().endsWith("Número inteiro"))
-                    symbolTable.get(i).setType("integer");
-                else if(currentToken.getClassificacao().endsWith("Número real")){
-                    symbolTable.get(i).setType("real");
-                }else if(currentToken.getClassificacao().endsWith("Real 3D")){
-                    symbolTable.get(i).setType("Real 3D");
-                }else if(currentToken.getClassificacao().endsWith("boolean")){
-                    symbolTable.get(i).setType("boolean");
-                }
-            }
-        }
-        
-    }
     
-    //Atribuir a todas as variáveis o seu tipo
-    //Ia colocar esse método por cima do outro, mas não sabia se tu ia usar
-    //então achei melhor criar um novo
     void setSymbolType_(){
         
         for(int i = 0; i < variableDeclaration.size(); i++)
@@ -57,7 +38,55 @@ public class Syntax {
                 
             }
         
-        printDeclaredVariables();
+        //printDeclaredVariables();
+    }
+    
+    private void setAssignmentType(){
+        for(int i = 0; i < stackAssignment.size(); i++)
+            for(int j = symbolTable.size() - 1; j >= 0; j--){
+                
+                if(stackAssignment.get(i).getIdentifier().equals(symbolTable.get(j).getIdentifier())){
+                    
+                    stackAssignment.get(i).setType(symbolTable.get(j).getType());
+                    break;
+                    
+                }
+                
+            }
+               
+    }
+    
+    private void checkOperation(){
+        
+        setAssignmentType();
+        for(int i=1; i < stackAssignment.size(); i++){
+            
+            if(stackAssignment.get(0).getType().equals("integer")){                
+                if(!stackAssignment.get(i).getType().equals("integer")){
+                    
+                    System.out.println("Aqui so aceita integer!! Ta de brincadeira com minha cara, comédia!!");
+                    System.exit(0);
+                }
+                
+            }else if(stackAssignment.get(0).getType().equals("real")){               
+                if(stackAssignment.get(i).getType().equals("boolean")){
+                    
+                    System.out.println("Ta viajando, fi? Aqui pega boolean não");
+                    System.exit(0);
+                    
+                }
+                
+            }else{               
+                if(!stackAssignment.get(i).getType().equals("boolean")){
+                    
+                    System.out.println("Tu não estudou lógica com Andrei não?");
+                    System.exit(0);
+                    
+                }               
+            }           
+        }
+        
+        stackAssignment.clear();
     }
     
     void printDeclaredVariables(){
@@ -76,6 +105,7 @@ public class Syntax {
             }
         }
         System.out.println("{" + currentToken.getToken() + "} undeclared. Line: "+ currentToken.getLine());
+        System.exit(0);
         
     }
     
@@ -185,7 +215,9 @@ public class Syntax {
                 nextToken();
                 if(currentToken.getToken().equals("integer") ||
                    currentToken.getToken().equals("real") ||
-                   currentToken.getToken().equals("boolean")){                        
+                   currentToken.getToken().equals("boolean")){
+                    setSymbolType_();
+                    variableDeclaration.clear();
                     nextToken();
                     if(currentToken.getToken().equals(";")){
                         nextToken();
@@ -516,6 +548,7 @@ public class Syntax {
             if(currentToken.getClassificacao().equals("Atribuição")){
                 nextToken();
                 if(expressao()){
+                    checkOperation();
                     return true;
                 }else{
                     System.out.println("Erro na expressão em comando");
@@ -528,6 +561,7 @@ public class Syntax {
         }else if(currentToken.getToken().equals("if")){
             nextToken();
             if(expressao()){
+                checkOperation();
                 if(currentToken.getToken().equals("then")){
                     nextToken();
                     //acho que pode ficar num loop aqui
@@ -554,6 +588,7 @@ public class Syntax {
         }else if(currentToken.getToken().equals("while")){
             nextToken();
             if(expressao()){
+                checkOperation();
                 if(currentToken.getToken().equals("do")){
                     nextToken();
                     if(comando()){
@@ -576,6 +611,7 @@ public class Syntax {
                 if(currentToken.getToken().equals("while")){
                     nextToken();
                     if(expressao()){
+                        checkOperation();
                         return true;
                     }else{
                         System.out.println("Esperando expressao");
@@ -614,6 +650,7 @@ public class Syntax {
     public boolean variavel(){
         if(currentToken.getClassificacao().equals("Identificador")){
             checkDeclaration();
+            stackAssignment.add(new IdentifierType(currentToken.getToken(), "unsigned"));
             nextToken();
             return true;
         }else{
@@ -623,6 +660,7 @@ public class Syntax {
 
     public boolean ativacaoProcedimento(){
         if(currentToken.getClassificacao().equals("Identificador")){
+            checkDeclaration();
             nextToken();
             if(currentToken.getToken().equals("(")){
                 nextToken();
@@ -663,6 +701,7 @@ public class Syntax {
 
         if(expressaoSimples()){
             if(opRelacional() && expressaoSimples()){
+                checkOperation();
                 return true;
             }else{
                 return true;
@@ -723,7 +762,7 @@ public class Syntax {
         if(opMultiplicativo()){
             if(fator()){
                 if(termo_()){
-                    nextToken();
+                    //nextToken();
                     return true;
                 }else{
                     System.out.println("Deu erro, esperando termo_()");
@@ -749,13 +788,22 @@ public class Syntax {
     
     public boolean fator(){
 
-        if(currentToken.getClassificacao().equals("Número inteiro") ||
-           currentToken.getClassificacao().equals("Número real") ||
-           currentToken.getClassificacao().equals("Real 3D")||
-           currentToken.getClassificacao().equals("boolean")){
+        if(currentToken.getClassificacao().equals("Número inteiro")){
+            stackAssignment.add(new IdentifierType(currentToken.getToken(), "integer"));
+            nextToken();
+            return true;
+        }else if(currentToken.getClassificacao().equals("Número real") ||
+                 currentToken.getClassificacao().equals("Real 3D")){
+            stackAssignment.add(new IdentifierType(currentToken.getToken(), "real"));
+            nextToken();
+            return true;
+        }else if(currentToken.getClassificacao().equals("boolean")){
+            stackAssignment.add(new IdentifierType(currentToken.getToken(), "boolean"));
             nextToken();
             return true;
         }else if(currentToken.getClassificacao().equals("Identificador")){
+            checkDeclaration();
+            stackAssignment.add(new IdentifierType(currentToken.getToken(), "unsigned"));
             nextToken();
             if(currentToken.getToken().equals("(")){
                 if(listaExpressoes()){

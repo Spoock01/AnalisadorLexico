@@ -1,11 +1,14 @@
 program exemplo;
 
 var a, b: integer;
+    i: real;
 
     procedure p (x:integer);
     var b, c : integer;
     begin
-        b:=x + y;
+        i:= 10.1 + 10.1 + a;
+        b:=x + c
+        
     end;
 
     procedure q;
@@ -14,11 +17,12 @@ var a, b: integer;
         procedure r (y:integer);
         var e,f: integer;
         begin
-            a:=y;
+            a:=y
         end
     begin
         c:=4;
     end;
 begin
+    p(1);
     a:=b
 end.
