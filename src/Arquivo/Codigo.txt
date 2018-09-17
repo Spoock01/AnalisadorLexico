@@ -6,8 +6,10 @@ var a, b: integer;
     procedure p (x:integer);
     var b, c : integer;
     begin
+        while((c>2) and (c>2)) do c:=2;
         i:= 10.1 + 10.1 + a;
         b:=x + c
+        
         
     end;
 
@@ -23,6 +25,5 @@ var a, b: integer;
         c:=4
     end;
 begin
-    p(1.1);
     a:=b
 end.

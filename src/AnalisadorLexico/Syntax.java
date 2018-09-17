@@ -11,7 +11,8 @@ public class Syntax {
    private final boolean showTokens = false;
    private ArrayList<IdentifierType> symbolTable;
    private ArrayList<Table> variableDeclaration; //Para poder atribuir os tipos a ele na hora da declaração
-   private ArrayList<IdentifierType> stackAssignment;
+   private ArrayList<IdentifierType> stackAttribution;
+   private String opArithmetic;
    
     public Syntax(ArrayList<Table> tokens, ArithmeticTable arithmeticTable){
         this.tokens = tokens;
@@ -19,7 +20,8 @@ public class Syntax {
         this.arithmeticTable = arithmeticTable;
         symbolTable = new ArrayList<>();
         variableDeclaration = new ArrayList<>();
-        stackAssignment = new ArrayList<>();
+        stackAttribution = new ArrayList<>();
+        opArithmetic = "";
         //symbolTable.add(new IdentifierType("$", "scope identifier"));
     }
 
@@ -41,13 +43,13 @@ public class Syntax {
         //printDeclaredVariables();
     }
     
-    private void setAssignmentType(){
-        for(int i = 0; i < stackAssignment.size(); i++)
+    private void setAttributionType(){
+        for(int i = 0; i < stackAttribution.size(); i++)
             for(int j = symbolTable.size() - 1; j >= 0; j--){
                 
-                if(stackAssignment.get(i).getIdentifier().equals(symbolTable.get(j).getIdentifier())){
+                if(stackAttribution.get(i).getIdentifier().equals(symbolTable.get(j).getIdentifier())){
                     
-                    stackAssignment.get(i).setType(symbolTable.get(j).getType());
+                    stackAttribution.get(i).setType(symbolTable.get(j).getType());
                     break;
                     
                 }
@@ -56,7 +58,7 @@ public class Syntax {
                
     }
     
-    private void checkOperation(){
+    /*private void checkOperation(){
         
         setAssignmentType();
         for(int i=1; i < stackAssignment.size(); i++){
@@ -89,6 +91,122 @@ public class Syntax {
         }
         
         stackAssignment.clear();
+    }*/
+    
+    private void checkAttribution(){
+        int top = stackAttribution.size() - 1;
+        int underTop = top - 1;
+        
+        setAttributionType();
+        
+        if(stackAttribution.get(underTop).getType().equals("integer") &&
+           stackAttribution.get(top).getType().equals("integer")){
+            
+            stackAttribution.clear();
+        }else if(stackAttribution.get(underTop).getType().equals("real") &&
+                 (stackAttribution.get(top).getType().equals("integer") || 
+                  stackAttribution.get(top).getType().equals("real"))){
+            
+            stackAttribution.clear();
+        }else if(stackAttribution.get(underTop).getType().equals("boolean") &&
+                 stackAttribution.get(top).getType().equals("boolean")){
+            
+            stackAttribution.clear();
+        }else{
+            
+            System.out.println("Erro de tipos { "+stackAttribution.get(underTop).getType()+" := "+stackAttribution.get(top).getType()+" }");
+            System.exit(0);
+        }
+        
+    }
+    
+    private void checkRelational(){
+        int top = stackAttribution.size() - 1;
+        int underTop = top - 1;
+        
+        setAttributionType();
+        
+        if(stackAttribution.get(underTop).getType().equals("real") &&
+           (stackAttribution.get(top).getType().equals("integer") || 
+            stackAttribution.get(top).getType().equals("real"))){
+            
+            stackAttribution.remove(top);
+            stackAttribution.remove(underTop);
+            stackAttribution.add(new IdentifierType("unnamed", "boolean"));
+            
+        }else if(stackAttribution.get(underTop).getType().equals("integer") &&
+                 (stackAttribution.get(top).getType().equals("integer") || 
+                  stackAttribution.get(top).getType().equals("real"))){
+            
+            stackAttribution.remove(top);
+            stackAttribution.remove(underTop);
+            stackAttribution.add(new IdentifierType("unnamed", "boolean"));
+            
+        }else{
+            
+            System.out.println("Erro de tipos (Relacional) { "+stackAttribution.get(underTop).getType()+" "+stackAttribution.get(top).getType()+" }");
+            System.exit(0);
+        }
+        
+    }
+    
+    private void checkArithmetic(){
+        int top = stackAttribution.size() - 1;
+        int underTop = top - 1;
+        
+        setAttributionType();
+        
+        if(opArithmetic.equals("and") || opArithmetic.equals("or")){
+            if(stackAttribution.get(underTop).getType().equals("boolean") &&
+               stackAttribution.get(top).getType().equals("boolean")){
+                
+                stackAttribution.remove(top);
+            }else{
+                
+                System.out.println("Erro de tipo (and || or) { "+stackAttribution.get(underTop).getType()+" "+stackAttribution.get(top).getType()+" }");
+                System.exit(0);
+            }
+        }else{
+            if(stackAttribution.get(underTop).getType().equals("integer") &&
+               stackAttribution.get(top).getType().equals("integer")){
+                
+                stackAttribution.remove(top);
+            }else if(stackAttribution.get(underTop).getType().equals("integer") &&
+                     stackAttribution.get(top).getType().equals("real")){
+                
+                //aqui eu removo o penultimo elemento pra deixar o tipo real como topo
+                stackAttribution.remove(underTop);
+            }else if(stackAttribution.get(underTop).getType().equals("real") &&
+                     (stackAttribution.get(top).getType().equals("integer") || 
+                      stackAttribution.get(top).getType().equals("real"))){
+                
+                stackAttribution.remove(top);
+            }else{
+                
+                System.out.println("Erro tipo (Aritmético) tem dois booleans");
+                System.exit(0);
+            }
+        }
+    }
+    
+    /*
+    Aqui pega o boolean da condição(if ou while) e compara com a expressão
+    */
+    private void checkConditional(){
+        int top = stackAttribution.size() - 1;
+        int underTop = top - 1;
+        
+        setAttributionType();
+        
+        if(stackAttribution.get(underTop).getType().equals("boolean") &&
+           stackAttribution.get(top).getType().equals("boolean")){
+            
+            stackAttribution.remove(top);
+            stackAttribution.remove(underTop);
+        }else{
+            
+            System.out.println("Erro tipo (Condicional): era pra ser dois booleans!!");
+        }
     }
     
     void printDeclaredVariables(){
@@ -551,23 +669,26 @@ public class Syntax {
             if(currentToken.getClassificacao().equals("Atribuição")){
                 nextToken();
                 if(expressao()){
-                    checkOperation();
+                    //checkOperation();
+                    checkAttribution();
                     return true;
                 }else{
                     System.out.println("Erro na expressão em comando");
                     return false;
                 }
             }else if(ativacaoProcedimento()){
-                checkOperation();
+                //checkOperation();
                 return true;
             }else{
                 System.out.println("Erro na atribuição em comando");
                 return false;
             }
         }else if(currentToken.getToken().equals("if")){
+            stackAttribution.add(new IdentifierType("unnamed", "boolean"));
             nextToken();
             if(expressao()){
-                checkOperation();
+                //checkOperation();
+                checkConditional();
                 if(currentToken.getToken().equals("then")){
                     nextToken();
                     //acho que pode ficar num loop aqui
@@ -592,9 +713,11 @@ public class Syntax {
                 return false;
             }
         }else if(currentToken.getToken().equals("while")){
+            stackAttribution.add(new IdentifierType("unnamed", "boolean"));
             nextToken();
             if(expressao()){
-                checkOperation();
+                //checkOperation();
+                checkConditional();
                 if(currentToken.getToken().equals("do")){
                     nextToken();
                     if(comando()){
@@ -615,9 +738,11 @@ public class Syntax {
             nextToken();
             if(comando()){
                 if(currentToken.getToken().equals("while")){
+                    stackAttribution.add(new IdentifierType("unnamed", "boolean"));
                     nextToken();
                     if(expressao()){
-                        checkOperation();
+                        //checkOperation();
+                        checkConditional();
                         return true;
                     }else{
                         System.out.println("Esperando expressao");
@@ -654,7 +779,7 @@ public class Syntax {
     public boolean variavel(){
         if(currentToken.getClassificacao().equals("Identificador")){
             checkDeclaration();
-            stackAssignment.add(new IdentifierType(currentToken.getToken(), "unsigned"));
+            stackAttribution.add(new IdentifierType(currentToken.getToken(), "unsigned"));
             nextToken();
             return true;
         }else{
@@ -701,7 +826,7 @@ public class Syntax {
 
         if(expressaoSimples()){
             if(opRelacional() && expressaoSimples()){
-                checkOperation();
+                //checkOperation();
                 return true;
             }else{
                 return true;
@@ -715,6 +840,7 @@ public class Syntax {
         
         if(opAditivo()){
             if(termo()){
+                checkArithmetic();
                 if(expressaoSimples_()){
                     //nextToken();
                     return true;
@@ -761,6 +887,7 @@ public class Syntax {
        
         if(opMultiplicativo()){
             if(fator()){
+                checkArithmetic();
                 if(termo_()){
                     //nextToken();
                     return true;
@@ -789,21 +916,21 @@ public class Syntax {
     public boolean fator(){
 
         if(currentToken.getClassificacao().equals("Número inteiro")){
-            stackAssignment.add(new IdentifierType(currentToken.getToken(), "integer"));
+            stackAttribution.add(new IdentifierType(currentToken.getToken(), "integer"));
             nextToken();
             return true;
         }else if(currentToken.getClassificacao().equals("Número real") ||
                  currentToken.getClassificacao().equals("Real 3D")){
-            stackAssignment.add(new IdentifierType(currentToken.getToken(), "real"));
+            stackAttribution.add(new IdentifierType(currentToken.getToken(), "real"));
             nextToken();
             return true;
         }else if(currentToken.getClassificacao().equals("boolean")){
-            stackAssignment.add(new IdentifierType(currentToken.getToken(), "boolean"));
+            stackAttribution.add(new IdentifierType(currentToken.getToken(), "boolean"));
             nextToken();
             return true;
         }else if(currentToken.getClassificacao().equals("Identificador")){
             checkDeclaration();
-            stackAssignment.add(new IdentifierType(currentToken.getToken(), "unsigned"));
+            stackAttribution.add(new IdentifierType(currentToken.getToken(), "unsigned"));
             nextToken();
             if(currentToken.getToken().equals("(")){
                 if(listaExpressoes()){
@@ -864,6 +991,7 @@ public class Syntax {
 
     public boolean opRelacional(){
          if(currentToken.getClassificacao().equals("Operador relacional")){
+            checkRelational();
             nextToken();
             return true;
          }    
@@ -873,6 +1001,7 @@ public class Syntax {
 
     public boolean opAditivo(){
          if(currentToken.getClassificacao().equals("Operador aditivo")){
+            opArithmetic = currentToken.getToken();
             nextToken();
             return true;
          }    
@@ -881,8 +1010,9 @@ public class Syntax {
 
     public boolean opMultiplicativo(){
         if(currentToken.getClassificacao().equals("Operador multiplicativo")){
-           nextToken();
-           return true;
+            opArithmetic = currentToken.getToken();
+            nextToken();
+            return true;
         }    
        return false;
    }
