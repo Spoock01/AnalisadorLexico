@@ -1,6 +1,7 @@
 package AnalisadorLexico;
 
 import java.util.ArrayList;
+import jdk.nashorn.internal.ir.IdentNode;
 
 
 public class Syntax {
@@ -10,9 +11,12 @@ public class Syntax {
    private int nextTokenIndex;
    private final boolean showTokens = false;
    private ArrayList<IdentifierType> symbolTable;
-   private ArrayList<Table> variableDeclaration; //Para poder atribuir os tipos a ele na hora da declaração
+   private ArrayList<IdentifierType> variableDeclaration; //Para poder atribuir os tipos a ele na hora da declaração
    private ArrayList<IdentifierType> stackAttribution;
+   private ArrayList<IdentifierType> pList;
    private String opArithmetic;
+   private ArrayList<ParameterType> pType;
+   private int indexPType = 0;
    
     public Syntax(ArrayList<Table> tokens, ArithmeticTable arithmeticTable){
         this.tokens = tokens;
@@ -21,26 +25,38 @@ public class Syntax {
         symbolTable = new ArrayList<>();
         variableDeclaration = new ArrayList<>();
         stackAttribution = new ArrayList<>();
+        this.pType = new ArrayList<>();
+        this.pList = new ArrayList<>();
         opArithmetic = "";
         //symbolTable.add(new IdentifierType("$", "scope identifier"));
     }
-
+    
+    void printVariableDeclaration(){
+        
+        for(IdentifierType it : variableDeclaration){
+            System.out.println(it.getIdentifier() + it.getType());
+        }
+        System.out.println("\n\n");
+        
+        
+    }
     
     void setSymbolType_(){
         
         for(int i = 0; i < variableDeclaration.size(); i++)
             for(int j = symbolTable.size() - 1; j >= 0; j--){
                 
-                if(variableDeclaration.get(i).getToken().equals(symbolTable.get(j).getIdentifier())){
-                    
+                if(variableDeclaration.get(i).getIdentifier().equals(symbolTable.get(j).getIdentifier())){
+                    variableDeclaration.get(i).setType(currentToken.getToken());
                     symbolTable.get(j).setType(currentToken.getToken());
+                    
                     break;
                     
                 }
                 
             }
-        
-        //printDeclaredVariables();
+            //printVariableDeclaration();
+       // printDeclaredVariables();
     }
     
     private void setAttributionType(){
@@ -58,40 +74,6 @@ public class Syntax {
                
     }
     
-    /*private void checkOperation(){
-        
-        setAssignmentType();
-        for(int i=1; i < stackAssignment.size(); i++){
-            
-            if(stackAssignment.get(0).getType().equals("integer")){                
-                if(!stackAssignment.get(i).getType().equals("integer")){
-                    
-                    System.out.println("Aqui so aceita integer!! Ta de brincadeira com minha cara, comédia!!");
-                    System.exit(0);
-                }
-                
-            }else if(stackAssignment.get(0).getType().equals("real")){               
-                if(stackAssignment.get(i).getType().equals("boolean")){
-                    
-                    System.out.println("Ta viajando, fi? Aqui pega boolean não");
-                    System.exit(0);
-                    
-                }
-                
-            }else if(stackAssignment.get(0).getType().equals("boolean")){               
-                if(!stackAssignment.get(i).getType().equals("boolean")){
-                    
-                    System.out.println("Tu não estudou lógica com Andrei não?");
-                    System.exit(0);
-                    
-                }               
-            }else if(stackAssignment.get(0).getType().equals("unsigned")){
-                
-            }           
-        }
-        
-        stackAssignment.clear();
-    }*/
     
     private void checkAttribution(){
         int top = stackAttribution.size() - 1;
@@ -276,7 +258,16 @@ public class Syntax {
              System.out.println("TOKEN ATUAL: | " + this.currentToken.getToken()
                                 + " | CLASSIFICACAO: " + this.currentToken.getClassificacao());
     }
-
+    
+    private void previousToken(){
+         if(nextTokenIndex - 1 >= 0)
+             this.currentToken = tokens.get(--nextTokenIndex);
+             
+         if(this.showTokens)
+             System.out.println("TOKEN ATUAL: | " + this.currentToken.getToken()
+                                + " | CLASSIFICACAO: " + this.currentToken.getClassificacao());
+    }
+    
     public void execute(){
 
         if(this.tokens == null)
@@ -374,8 +365,14 @@ public class Syntax {
                 if(currentToken.getToken().equals("integer") ||
                    currentToken.getToken().equals("real") ||
                    currentToken.getToken().equals("boolean")){
+                    
                     setSymbolType_();
+                    /*
+                        nao era pra ser aqui
+                    
+                    */
                     variableDeclaration.clear();
+                    
                     nextToken();
                     if(currentToken.getToken().equals(";")){
                         nextToken();
@@ -410,7 +407,7 @@ public class Syntax {
             nextToken();
             if(currentToken.getClassificacao().equals("Identificador")){
                 declaration();
-                variableDeclaration.add(currentToken);
+                variableDeclaration.add(new IdentifierType(currentToken.getToken(), "unsigned"));
                 nextToken();
                 if(listaIdentificadores_()){
                     return true;
@@ -431,7 +428,7 @@ public class Syntax {
     public boolean listaIdentificadores(){
         if(currentToken.getClassificacao().equals("Identificador")){
             declaration();
-            variableDeclaration.add(currentToken);
+            variableDeclaration.add(new IdentifierType(currentToken.getToken(), "unsigned"));
             nextToken();
             if(listaIdentificadores_()){
                 return true;
@@ -449,7 +446,7 @@ public class Syntax {
         if(currentToken.getClassificacao().equals("Palavra reservada") &&
           (currentToken.getToken().equals("integer") || currentToken.getToken().equals("real")
         || currentToken.getToken().equals("boolean"))){
-           
+           setSymbolType_();
            nextToken();
            return true;
            
@@ -493,19 +490,24 @@ public class Syntax {
        
        if(currentToken.getToken().equals("procedure")){
            
-           //enterScope();
-           
            nextToken();
            if(currentToken.getClassificacao().equals("Identificador")){
+               
+               this.pType.add(new ParameterType(currentToken.getToken()));
+               
+               
                 declaration();
                 enterScope();
                 nextToken();
                 if(argumentos()){
+                    indexPType++;
                     if(currentToken.getToken().equals(";")){
                         nextToken();
                         if(declaracaoVariaveis()){
                             if(declaracaoSubprogramas()){
+                                
                                 if(comandoComposto()){
+                                    
                                     exitScope();
                                     return true;
                                 }else{
@@ -544,6 +546,11 @@ public class Syntax {
                
                if(currentToken.getToken().equals(")")){
                    
+                   //printVariableDeclaration();
+                   ArrayList<IdentifierType> aux = (ArrayList<IdentifierType>) variableDeclaration.clone();
+                   this.pType.get(indexPType).setList( aux );
+                   this.pType.get(indexPType).toString1();
+
                    nextToken();
                    return true;
                    
@@ -619,6 +626,7 @@ public class Syntax {
            nextToken();
            comandosOpcionais();
            if(currentToken.getToken().equals("end")){
+               
                nextToken();
                return true;
             }else{
@@ -669,7 +677,6 @@ public class Syntax {
             if(currentToken.getClassificacao().equals("Atribuição")){
                 nextToken();
                 if(expressao()){
-                    //checkOperation();
                     checkAttribution();
                     return true;
                 }else{
@@ -677,7 +684,7 @@ public class Syntax {
                     return false;
                 }
             }else if(ativacaoProcedimento()){
-                //checkOperation();
+                
                 return true;
             }else{
                 System.out.println("Erro na atribuição em comando");
@@ -788,11 +795,33 @@ public class Syntax {
     }
 
     public boolean ativacaoProcedimento(){
+        previousToken();
+        int indexpt = 0;
+        pList = new ArrayList<IdentifierType>();
+        
+        for(int i = 0; i < pType.size(); i++){
+            if(currentToken.getToken().equals(pType.get(i).getName())){
+                indexpt = i;
+                break;
+            }
+        }
+        
+        nextToken();
         
         if(currentToken.getToken().equals("(")){
             nextToken();
             if(listaExpressoes()){
                 if(currentToken.getToken().equals(")")){
+                    //System.out.println("Tamanho do plist: " + pList.size());
+                    System.out.println("Procedimento: " + pType.get(indexpt).getName());
+                    pType.get(indexpt).toString1();
+                    
+                    if(!pType.get(indexpt).search(pList)){
+                        System.out.println("Mermao, olha esses parametros ai.");
+                        System.exit(0);
+                    }
+                    
+                    
                     nextToken();
                     return true;
                 }else{
@@ -808,14 +837,38 @@ public class Syntax {
         }
         
     }
+    
+    public boolean listaExpressoes_(){
+        
+        if(currentToken.getToken().equals(",")){
+            nextToken();
+            if(expressao()){
+                
+                /*
+                    talvez precise do nextToken
+                */
+                //nextToken();
+                if(listaExpressoes_()){
+                    return true;
+                }
+            }else{
+                System.out.println("Esperando expressão em listaExpressoes_: " + currentToken.getLine());
+            }
+                
+        }
+        return true;
+    }
 
     public boolean listaExpressoes(){
         //nextToken();
         if(expressao()){
             //nextToken();
-        }else if(listaExpressoes()){
-            nextToken();
-        }else{
+            if(listaExpressoes_()){
+                //nextToken();
+                return true;
+            }
+        }
+        else{
             System.out.println("Deu pau na lista de expressoes");
             return false;
         }
@@ -918,20 +971,31 @@ public class Syntax {
 
         if(currentToken.getClassificacao().equals("Número inteiro")){
             stackAttribution.add(new IdentifierType(currentToken.getToken(), "integer"));
+            pList.add(new IdentifierType("", "integer"));
             nextToken();
             return true;
         }else if(currentToken.getClassificacao().equals("Número real") ||
                  currentToken.getClassificacao().equals("Real 3D")){
             stackAttribution.add(new IdentifierType(currentToken.getToken(), "real"));
+            pList.add(new IdentifierType("", "real"));
             nextToken();
             return true;
         }else if(currentToken.getClassificacao().equals("boolean")){
             stackAttribution.add(new IdentifierType(currentToken.getToken(), "boolean"));
+            pList.add(new IdentifierType("", "boolean"));
             nextToken();
             return true;
         }else if(currentToken.getClassificacao().equals("Identificador")){
             checkDeclaration();
             stackAttribution.add(new IdentifierType(currentToken.getToken(), "unsigned"));
+            
+            for(int i = 0; i < symbolTable.size();i++){
+                if(currentToken.getToken().equals(symbolTable.get(i).getIdentifier())){
+                    pList.add(new IdentifierType("", symbolTable.get(i).getType()));
+                    break;
+                }
+            }
+            
             nextToken();
             if(currentToken.getToken().equals("(")){
                 if(listaExpressoes()){
@@ -947,8 +1011,10 @@ public class Syntax {
                     System.out.println("Deu pau! Esperando lista de expressoes em fator");
                     return false;
                 }
+            }else{
+                return true;
             }
-            return true;
+            
         }else if(currentToken.getToken().equals("not")){
             nextToken();
             if(fator()){
