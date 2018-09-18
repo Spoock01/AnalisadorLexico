@@ -3,7 +3,7 @@ program exemplo;
 var a, b: integer;
     i: real;
 
-    procedure p (x:integer;u:real);
+    procedure p (x:integer;u:real;zi:boolean);
     var b, c : integer;
     begin
         while( (c<9) and (c=2) ) do c:=2;
@@ -24,6 +24,6 @@ var a, b: integer;
         c:=4
     end;
 begin
-    p( 1 , true );
+    p( 1 , 1.0 , true);
     a:=b
 end.

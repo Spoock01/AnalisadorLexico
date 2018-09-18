@@ -28,7 +28,6 @@ public class Syntax {
         this.pType = new ArrayList<>();
         this.pList = new ArrayList<>();
         opArithmetic = "";
-        //symbolTable.add(new IdentifierType("$", "scope identifier"));
     }
     
     void printVariableDeclaration(){
@@ -46,7 +45,8 @@ public class Syntax {
         for(int i = 0; i < variableDeclaration.size(); i++)
             for(int j = symbolTable.size() - 1; j >= 0; j--){
                 
-                if(variableDeclaration.get(i).getIdentifier().equals(symbolTable.get(j).getIdentifier())){
+                if(variableDeclaration.get(i).getIdentifier().equals(symbolTable.get(j).getIdentifier())
+                    && symbolTable.get(j).getType().equals("undefined")){
                     variableDeclaration.get(i).setType(currentToken.getToken());
                     symbolTable.get(j).setType(currentToken.getToken());
                     
@@ -55,8 +55,7 @@ public class Syntax {
                 }
                 
             }
-            //printVariableDeclaration();
-       // printDeclaredVariables();
+
     }
     
     private void setAttributionType(){
@@ -165,7 +164,7 @@ public class Syntax {
                 stackAttribution.remove(top);
             }else{
                 
-                System.out.println("Erro tipo (Aritmético) tem dois booleans");
+                System.out.println("Erro tipo (Aritmético) na linha: " + currentToken.getLine() + "{boolean encontrado}");
                 System.exit(0);
             }
         }
@@ -193,7 +192,6 @@ public class Syntax {
     
     void printDeclaredVariables(){
         for(int i = 0; i < symbolTable.size(); i++){
-            //System.out.print(symbolTable.get(i).getIdentifier() + " ");
             System.out.println(symbolTable.get(i).getIdentifier() + " "+symbolTable.get(i).getType());
         }
         System.out.println("");
@@ -228,17 +226,12 @@ public class Syntax {
     
     public void enterScope(){
         
-        //System.out.println("\n\nEntrando no escopo");
-        //printDeclaredVariables();
         IdentifierType pair = new IdentifierType("$", "scope identifier");
         symbolTable.add(pair);   
-        //printDeclaredVariables();
     }
     
     public void exitScope(){
 
-        //System.out.println("\n\nSaindo do escopo");
-        //printDeclaredVariables();
         for(int i = symbolTable.size() - 1; i >= 0; i--){
             if(symbolTable.get(i).getIdentifier().equals("$")){
                 symbolTable.remove(i);
@@ -246,8 +239,6 @@ public class Syntax {
             }else
                 symbolTable.remove(i);
         }
-        
-        //printDeclaredVariables();
     }
     
     private void nextToken(){
@@ -367,10 +358,6 @@ public class Syntax {
                    currentToken.getToken().equals("boolean")){
                     
                     setSymbolType_();
-                    /*
-                        nao era pra ser aqui
-                    
-                    */
                     variableDeclaration.clear();
                     
                     nextToken();
@@ -415,7 +402,6 @@ public class Syntax {
                     System.out.println("Esperando listaIdentificadores_ em listaIdentificadores_");
                     return false;
                 }
-                    
             }else{
                 System.out.println("Esperando identificador em listaIdentificadores_");
                 return false;
@@ -469,18 +455,12 @@ public class Syntax {
    public boolean declaracaoSubprogramas_(){
        
        if(declaracaoSubprograma()){
-           
            if(currentToken.getToken().equals(";")){
-               
                nextToken();
                return declaracaoSubprogramas_();
-               
            }else{
-               
                return false;
-               
            }
-           
        }
        
        return true;
@@ -494,7 +474,6 @@ public class Syntax {
            if(currentToken.getClassificacao().equals("Identificador")){
                
                this.pType.add(new ParameterType(currentToken.getToken()));
-               
                
                 declaration();
                 enterScope();
@@ -539,35 +518,21 @@ public class Syntax {
    public boolean argumentos(){
 
        if(currentToken.getToken().equals("(")){
-           
            nextToken();
-
            if(listaParametros()){
-               
                if(currentToken.getToken().equals(")")){
-                   
-                   //printVariableDeclaration();
                    ArrayList<IdentifierType> aux = (ArrayList<IdentifierType>) variableDeclaration.clone();
                    this.pType.get(indexPType).setList( aux );
-                   this.pType.get(indexPType).toString1();
-
                    nextToken();
                    return true;
-                   
                }else{
-                   
                    System.out.println("Faltou ) nos argumentos");
                    return false;
-                   
                }
-               
            }else{
-               
                System.out.println("Erro na listaParametros nos argumentos");
                return false;
-               
            }
-           
        }
        
        return true;
@@ -694,11 +659,9 @@ public class Syntax {
             stackAttribution.add(new IdentifierType("unnamed", "boolean"));
             nextToken();
             if(expressao()){
-                //checkOperation();
                 checkConditional();
                 if(currentToken.getToken().equals("then")){
                     nextToken();
-                    //acho que pode ficar num loop aqui
                     if(comando()){
                         if(parteElse()){
                             nextToken();
@@ -723,7 +686,6 @@ public class Syntax {
             stackAttribution.add(new IdentifierType("unnamed", "boolean"));
             nextToken();
             if(expressao()){
-                //checkOperation();
                 checkConditional();
                 if(currentToken.getToken().equals("do")){
                     nextToken();
@@ -748,7 +710,6 @@ public class Syntax {
                     stackAttribution.add(new IdentifierType("unnamed", "boolean"));
                     nextToken();
                     if(expressao()){
-                        //checkOperation();
                         checkConditional();
                         return true;
                     }else{
@@ -775,9 +736,7 @@ public class Syntax {
     public boolean parteElse(){
         
         if(currentToken.getToken().equals("else")){
-            
             return comando();
-            
         }
         
         return true;
@@ -797,7 +756,7 @@ public class Syntax {
     public boolean ativacaoProcedimento(){
         previousToken();
         int indexpt = 0;
-        pList = new ArrayList<IdentifierType>();
+        pList = new ArrayList<>();
         
         for(int i = 0; i < pType.size(); i++){
             if(currentToken.getToken().equals(pType.get(i).getName())){
@@ -812,16 +771,11 @@ public class Syntax {
             nextToken();
             if(listaExpressoes()){
                 if(currentToken.getToken().equals(")")){
-                    //System.out.println("Tamanho do plist: " + pList.size());
-                    System.out.println("Procedimento: " + pType.get(indexpt).getName());
-                    pType.get(indexpt).toString1();
                     
                     if(!pType.get(indexpt).search(pList)){
-                        System.out.println("Mermao, olha esses parametros ai.");
                         System.exit(0);
                     }
-                    
-                    
+
                     nextToken();
                     return true;
                 }else{
@@ -844,10 +798,6 @@ public class Syntax {
             nextToken();
             if(expressao()){
                 
-                /*
-                    talvez precise do nextToken
-                */
-                //nextToken();
                 if(listaExpressoes_()){
                     return true;
                 }
@@ -860,11 +810,9 @@ public class Syntax {
     }
 
     public boolean listaExpressoes(){
-        //nextToken();
+        
         if(expressao()){
-            //nextToken();
             if(listaExpressoes_()){
-                //nextToken();
                 return true;
             }
         }
@@ -879,7 +827,6 @@ public class Syntax {
 
         if(expressaoSimples()){
             if(opRelacional() && expressaoSimples()){
-                //checkOperation();
                 checkRelational();
                 return true;
             }else{
@@ -896,7 +843,6 @@ public class Syntax {
             if(termo()){
                 checkArithmetic();
                 if(expressaoSimples_()){
-                    //nextToken();
                     return true;
                 }else{
                     System.out.println("deu erro em expressaoSimples_() esperando expressaoSimples_()");
@@ -943,7 +889,6 @@ public class Syntax {
             if(fator()){
                 checkArithmetic();
                 if(termo_()){
-                    //nextToken();
                     return true;
                 }else{
                     System.out.println("Deu erro, esperando termo_()");

@@ -17,8 +17,13 @@ public class ParameterType {
         return name;
     }
 
-    public void setList(ArrayList<IdentifierType> list) {
-        this.list = list;
+    public void setList(ArrayList<IdentifierType> list1) {
+        
+        for(IdentifierType it : list1){
+            IdentifierType iz = new IdentifierType(it.getIdentifier(),it.getType());
+            this.list.add(iz);
+        }
+        
     }
 
     public void setName(String name) {
@@ -33,27 +38,24 @@ public class ParameterType {
         return this.list.size();
     }
     
-    public void toString1(){
-        for(IdentifierType it : list ){
-            System.out.println(this.name + " " + it.getIdentifier() + " " + it.getType());
-        }
-    }
-    
+   
     public boolean search (ArrayList<IdentifierType> list2){
         
         if(this.list.size() != list2.size()){
-            System.out.println("Tamanho diferente: " + list.size() + " " + list2.size());
+            System.out.println("Quantidade de argumentos incorreta.");
             return false;
         }
         int i = 0;
         
-        for(IdentifierType it : list)
-            if(!it.getType().equals(list2.get(i).getType())){
-             
-                System.out.println("Testando: " + it.getType() + " " + list2.get(i).getType());
-                i++;
+        for(i = 0; i < this.list.size(); i++){
+            if(!list.get(i).getType().equals(list2.get(i).getType())){
+                System.out.println("Esperando: {" + list.get(i).getType()
+                + "} e recebendo: {" + list2.get(i).getType() + "} na função {"
+                + this.name + "}");
                 return false;
             }
+        }
+
         return true;        
     }
 }
