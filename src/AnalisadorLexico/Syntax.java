@@ -514,7 +514,7 @@ public class Syntax {
            if(currentToken.getClassificacao().equals("Identificador")){
                
                this.pType.add(new ParameterType(currentToken.getToken()));
-               
+                
                 declaration(1);
                 enterScope();
                 nextToken();

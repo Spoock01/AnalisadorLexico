@@ -12,10 +12,10 @@ var a, b: integer;
 
     end;
 
-    procedure q;
+    procedure p;
     var c,d: integer;
     
-        procedure q (y:integer;z:integer);
+        procedure r (y:integer;z:integer);
         var e,f,r: integer;
         begin
             a:=y
@@ -24,6 +24,6 @@ var a, b: integer;
         c:=4
     end;
 begin
-    p( 1 , 1.0 , true);
+    p( 1 , 1 , true);
     a:=b
 end.
