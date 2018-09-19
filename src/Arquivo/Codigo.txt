@@ -15,8 +15,8 @@ var a, b: integer;
     procedure q;
     var c,d: integer;
     
-        procedure r (y:integer;z:integer);
-        var e,f: integer;
+        procedure q (y:integer;z:integer);
+        var e,f,r: integer;
         begin
             a:=y
         end

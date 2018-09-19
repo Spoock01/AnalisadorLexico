@@ -11,6 +11,7 @@ public class Syntax {
    private int nextTokenIndex;
    private final boolean showTokens = false;
    private ArrayList<IdentifierType> symbolTable;
+   private ArrayList<IdentifierType> symbolTableProcedure;
    private ArrayList<IdentifierType> variableDeclaration; //Para poder atribuir os tipos a ele na hora da declaração
    private ArrayList<IdentifierType> stackAttribution;
    private ArrayList<IdentifierType> pList;
@@ -23,6 +24,7 @@ public class Syntax {
         this.nextTokenIndex = 0;
         this.arithmeticTable = arithmeticTable;
         symbolTable = new ArrayList<>();
+        symbolTableProcedure = new ArrayList<>();
         variableDeclaration = new ArrayList<>();
         stackAttribution = new ArrayList<>();
         this.pType = new ArrayList<>();
@@ -201,37 +203,64 @@ public class Syntax {
         System.out.println("");
     }
     
-    void checkDeclaration(){
+    void checkDeclaration(int type){
         
-        for(int i = 0; i < symbolTable.size(); i++){
-            if(currentToken.getToken().equals(symbolTable.get(i).getIdentifier())){
-                return;
+        if(type == 0){
+            for(int i = 0; i < symbolTable.size(); i++){
+                if(currentToken.getToken().equals(symbolTable.get(i).getIdentifier())){
+                    return;
+                }
             }
+            System.out.println("{" + currentToken.getToken() + "} undeclared. Line: "+ currentToken.getLine());
+            System.exit(0);    
+        }else if(type == 1){
+            for(int i = 0; i < symbolTableProcedure.size(); i++){
+                if(currentToken.getToken().equals(symbolTableProcedure.get(i).getIdentifier())){
+                    return;
+                }
+            }
+            System.out.println("{" + currentToken.getToken() + "} undeclared. Line: "+ currentToken.getLine());
+            System.exit(0);
         }
-        System.out.println("{" + currentToken.getToken() + "} undeclared. Line: "+ currentToken.getLine());
-        System.exit(0);
+        
         
     }
     
-    void declaration(){
+    void declaration(int type){
         IdentifierType pair = new IdentifierType(currentToken.getToken(), "undefined");
         //System.out.println("Declaring: " + currentToken.getToken());
-        for(int i = symbolTable.size() - 1; i >= 0; i--){
-            if(symbolTable.get(i).getIdentifier().equals("$")){
-                symbolTable.add(pair);
-                break;
-            }else if(symbolTable.get(i).getIdentifier().equals(currentToken.getToken())){
-                System.out.println("{"+currentToken.getToken() + "} already declared!"+" Linha: "  + currentToken.getLine());
-                break;
+        if(type == 0){
+            for(int i = symbolTable.size() - 1; i >= 0; i--){
+                if(symbolTable.get(i).getIdentifier().equals("$")){
+                    symbolTable.add(pair);
+                    break;
+                }else if(symbolTable.get(i).getIdentifier().equals(currentToken.getToken())){
+                    System.out.println("{"+currentToken.getToken() + "} already declared!"+" Linha: "  + currentToken.getLine());
+                    break;
+                }
             }
-        }   
+        }else if(type == 1){
+            
+            for(int i = symbolTableProcedure.size() - 1; i >= 0; i--){
+                if(symbolTableProcedure.get(i).getIdentifier().equals("$")){
+                    symbolTableProcedure.add(pair);
+                    break;
+                }else if(symbolTableProcedure.get(i).getIdentifier().equals(currentToken.getToken())){
+                    System.out.println("{"+currentToken.getToken() + "} already declared!"+" Linha: "  + currentToken.getLine());
+                    break;
+                }
+            }
+            
+        }
+          
         //printDeclaredVariables();
     }
     
     public void enterScope(){
         
         IdentifierType pair = new IdentifierType("$", "scope identifier");
-        symbolTable.add(pair);   
+        symbolTable.add(pair);
+        symbolTableProcedure.add(pair);
     }
     
     public void exitScope(){
@@ -242,6 +271,13 @@ public class Syntax {
                 break;
             }else
                 symbolTable.remove(i);
+        }
+        for(int i = symbolTableProcedure.size() - 1; i >= 0; i--){
+            if(symbolTableProcedure.get(i).getIdentifier().equals("$")){
+                symbolTableProcedure.remove(i);
+                break;
+            }else
+                symbolTableProcedure.remove(i);
         }
     }
     
@@ -273,7 +309,7 @@ public class Syntax {
             enterScope();
             nextToken();
             if(currentToken.getClassificacao().equals("Identificador")){
-                declaration();
+                declaration(0);
                 nextToken();
                 if(currentToken.getToken().equals(";"))
                     nextToken();
@@ -397,7 +433,7 @@ public class Syntax {
         if(currentToken.getToken().equals(",")){
             nextToken();
             if(currentToken.getClassificacao().equals("Identificador")){
-                declaration();
+                declaration(0);
                 variableDeclaration.add(new IdentifierType(currentToken.getToken(), "unsigned"));
                 nextToken();
                 if(listaIdentificadores_()){
@@ -417,7 +453,7 @@ public class Syntax {
 
     public boolean listaIdentificadores(){
         if(currentToken.getClassificacao().equals("Identificador")){
-            declaration();
+            declaration(0);
             variableDeclaration.add(new IdentifierType(currentToken.getToken(), "unsigned"));
             nextToken();
             if(listaIdentificadores_()){
@@ -479,7 +515,7 @@ public class Syntax {
                
                this.pType.add(new ParameterType(currentToken.getToken()));
                
-                declaration();
+                declaration(1);
                 enterScope();
                 nextToken();
                 if(argumentos()){
@@ -645,6 +681,11 @@ public class Syntax {
        
         if(variavel()){
             if(currentToken.getClassificacao().equals("Atribuição")){
+                previousToken();
+                previousToken();
+                checkDeclaration(0);
+                nextToken();
+                nextToken();
                 nextToken();
                 if(expressao()){
                     checkAttribution();
@@ -749,7 +790,7 @@ public class Syntax {
 
     public boolean variavel(){
         if(currentToken.getClassificacao().equals("Identificador")){
-            checkDeclaration();
+            //checkDeclaration(0);
             stackAttribution.add(new IdentifierType(currentToken.getToken(), "unsigned"));
             nextToken();
             return true;
@@ -760,6 +801,8 @@ public class Syntax {
 
     public boolean ativacaoProcedimento(){
         previousToken();
+        previousToken();
+        checkDeclaration(1);
         int indexpt = 0;
         pList = new ArrayList<>();
         
@@ -770,6 +813,7 @@ public class Syntax {
             }
         }
         
+        nextToken();
         nextToken();
         
         if(currentToken.getToken().equals("(")){
@@ -937,7 +981,7 @@ public class Syntax {
             nextToken();
             return true;
         }else if(currentToken.getClassificacao().equals("Identificador")){
-            checkDeclaration();
+            checkDeclaration(0);
             stackAttribution.add(new IdentifierType(currentToken.getToken(), "unsigned"));
             
             for(int i = 0; i < symbolTable.size();i++){
