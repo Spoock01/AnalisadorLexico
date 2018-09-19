@@ -236,6 +236,7 @@ public class Syntax {
                     break;
                 }else if(symbolTable.get(i).getIdentifier().equals(currentToken.getToken())){
                     System.out.println("{"+currentToken.getToken() + "} already declared!"+" Linha: "  + currentToken.getLine());
+                    System.exit(0);
                     break;
                 }
             }
@@ -247,6 +248,7 @@ public class Syntax {
                     break;
                 }else if(symbolTableProcedure.get(i).getIdentifier().equals(currentToken.getToken())){
                     System.out.println("{"+currentToken.getToken() + "} already declared!"+" Linha: "  + currentToken.getLine());
+                    System.exit(0);
                     break;
                 }
             }
