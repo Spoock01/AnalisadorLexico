@@ -95,7 +95,8 @@ public class Syntax {
             stackAttribution.clear();
         }else{
             
-            System.out.println("Erro de tipos { "+stackAttribution.get(underTop).getType()+" := "+stackAttribution.get(top).getType()+" }");
+            System.out.println("Erro de tipos { "+stackAttribution.get(underTop).getType()+" := "+stackAttribution.get(top).getType()+" } Linha: " 
+                    + currentToken.getLine());
             System.exit(0);
         }
         
@@ -125,7 +126,8 @@ public class Syntax {
             
         }else{
             
-            System.out.println("Erro de tipos (Relacional) { "+stackAttribution.get(underTop).getType()+" "+stackAttribution.get(top).getType()+" }");
+            System.out.println("Erro de tipos (Relacional) { "+stackAttribution.get(underTop).getType()+" "+stackAttribution.get(top).getType()+" } Linha: " 
+                    + currentToken.getLine());
             System.exit(0);
         }
         
@@ -144,7 +146,8 @@ public class Syntax {
                 stackAttribution.remove(top);
             }else{
                 
-                System.out.println("Erro de tipo (and || or) { "+stackAttribution.get(underTop).getType()+" "+stackAttribution.get(top).getType()+" }");
+                System.out.println("Erro de tipo (and || or) { "+stackAttribution.get(underTop).getType()+" "+stackAttribution.get(top).getType()+" } Linha: " 
+                    + currentToken.getLine());
                 System.exit(0);
             }
         }else{
@@ -186,7 +189,8 @@ public class Syntax {
             stackAttribution.remove(underTop);
         }else{
             
-            System.out.println("Erro tipo (Condicional): era pra ser dois booleans!!");
+            System.out.println("Erro tipo (Condicional): era pra ser dois booleans!!" +" } Linha: " 
+                    + currentToken.getLine());
         }
     }
     
@@ -217,7 +221,7 @@ public class Syntax {
                 symbolTable.add(pair);
                 break;
             }else if(symbolTable.get(i).getIdentifier().equals(currentToken.getToken())){
-                System.out.println("{"+currentToken.getToken() + "} already declared!");
+                System.out.println("{"+currentToken.getToken() + "} already declared!"+" Linha: "  + currentToken.getLine());
                 break;
             }
         }   
@@ -274,13 +278,13 @@ public class Syntax {
                 if(currentToken.getToken().equals(";"))
                     nextToken();
                 else
-                    System.out.println("Esperando ; ao fim do identificador de programa.");
+                    System.out.println("Esperando ; ao fim do identificador de programa." + " Linha: "  + currentToken.getLine());
                 
             }else
-                System.out.println("Esperando identificador de programa");
+                System.out.println("Esperando identificador de programa"+ " Linha: "  + currentToken.getLine());
             
         }else{
-            System.out.println("Esperando palavra reservada \" program \"");
+            System.out.println("Esperando palavra reservada \" program \""+ " Linha: "  + currentToken.getLine());
         }
         
         if(declaracaoVariaveis()){
@@ -289,14 +293,14 @@ public class Syntax {
                     if(currentToken.getToken().equals(".")){
                         System.out.println("Deu tudo certo!!");
                     }else
-                        System.out.println("Faltou o . no final do programa");
+                        System.out.println("Faltou o . no final do programa"+ " Linha: "  + currentToken.getLine());
                else
-                    System.out.println("Erro comandoComposto no escopo principal");
+                    System.out.println("Erro comandoComposto no escopo principal"+ " Linha: "  + currentToken.getLine());
             }else
-                System.out.println("Erro declaracaoSubprogramas no escopo principal");
+                System.out.println("Erro declaracaoSubprogramas no escopo principal"+ " Linha: "  + currentToken.getLine());
 
         }else
-            System.out.println("Erro declaracaoVariaveis no escopo principal");
+            System.out.println("Erro declaracaoVariaveis no escopo principal"+ " Linha: "  + currentToken.getLine());
         
     }
 
@@ -326,20 +330,20 @@ public class Syntax {
                         if(listaDeclaracaoVariaveis_()){
                             return true;
                         }else{
-                            System.out.println("Esperando listaDeclaracaoVariaveis_ em listaDeclaracaoVariaveis_");
+                            System.out.println("Esperando listaDeclaracaoVariaveis_ em listaDeclaracaoVariaveis_"+ " Linha: "  + currentToken.getLine());
                             return false;
                         }
                         
                     }else{
-                        System.out.println("Erro, esperando listaDeclaracaoVariaveis_");
+                        System.out.println("Erro, esperando listaDeclaracaoVariaveis_"+ " Linha: "  + currentToken.getLine());
                         return false;
                     }
                 }else{
-                    System.out.println("Erro esperando tipo em listaDeclaracaoVariaveis_");
+                    System.out.println("Erro esperando tipo em listaDeclaracaoVariaveis_"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Esperando : em listaDeclaracaoVariaveis_");
+                System.out.println("Esperando : em listaDeclaracaoVariaveis_"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else{
@@ -366,24 +370,24 @@ public class Syntax {
                         if(listaDeclaracaoVariaveis_()){
                             return true;
                         }else{
-                            System.out.println("Esperando listaDeclaracaoVariaveis_ em listaDeclaracaoVariaveis");
+                            System.out.println("Esperando listaDeclaracaoVariaveis_ em listaDeclaracaoVariaveis"+ " Linha: "  + currentToken.getLine());
                             return false;
                         }
                         
                     }else{
-                        System.out.println("Erro, esperando listaDeclaracaoVariaveis_");
+                        System.out.println("Erro, esperando listaDeclaracaoVariaveis_"+ " Linha: "  + currentToken.getLine());
                         return false;
                     }
                 }else{
-                    System.out.println("Erro esperando tipo em listaDeclaracaoVariaveis");
+                    System.out.println("Erro esperando tipo em listaDeclaracaoVariaveis"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Esperando : em listaDeclaracaoVariaveis");
+                System.out.println("Esperando : em listaDeclaracaoVariaveis"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else{
-            System.out.println("Esperando lista de identificadores em listaDeclaracaoVariaveis");
+            System.out.println("Esperando lista de identificadores em listaDeclaracaoVariaveis"+ " Linha: "  + currentToken.getLine());
             return false;
         }
     }
@@ -399,11 +403,11 @@ public class Syntax {
                 if(listaIdentificadores_()){
                     return true;
                 }else{
-                    System.out.println("Esperando listaIdentificadores_ em listaIdentificadores_");
+                    System.out.println("Esperando listaIdentificadores_ em listaIdentificadores_"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Esperando identificador em listaIdentificadores_");
+                System.out.println("Esperando identificador em listaIdentificadores_"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else{
@@ -419,7 +423,7 @@ public class Syntax {
             if(listaIdentificadores_()){
                 return true;
             }else{
-                System.out.println("Esperando listaIdentificadores_() em listaIdentificadores");
+                System.out.println("Esperando listaIdentificadores_() em listaIdentificadores"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else{
@@ -490,11 +494,11 @@ public class Syntax {
                                     exitScope();
                                     return true;
                                 }else{
-                                    System.out.println("Erro comandoComposto em declaracaoSubprograma");
+                                    System.out.println("Erro comandoComposto em declaracaoSubprograma"+ " Linha: "  + currentToken.getLine());
                                     return false;
                                 }    
                             }else{
-                                System.out.println("Erro declaracaoSubprogramas em declaracaoVariaveis");
+                                System.out.println("Erro declaracaoSubprogramas em declaracaoVariaveis"+ " Linha: "  + currentToken.getLine());
                                 return false;
                             }
                         }
@@ -526,11 +530,12 @@ public class Syntax {
                    nextToken();
                    return true;
                }else{
-                   System.out.println("Faltou ) nos argumentos");
+                   System.out.println("Faltou ) nos argumentos"+ " Linha: "  + currentToken.getLine());
+                   System.exit(0);
                    return false;
                }
            }else{
-               System.out.println("Erro na listaParametros nos argumentos");
+               System.out.println("Erro na listaParametros nos argumentos"+ " Linha: "  + currentToken.getLine());
                return false;
            }
        }
@@ -547,16 +552,16 @@ public class Syntax {
                if(tipo()){
                    return listaParametros_();
                }else{
-                   System.out.println("Erro tipo na listaParametros");
+                   System.out.println("Erro tipo na listaParametros"+ " Linha: "  + currentToken.getLine());
                    return false;
                }
            }else{
-               System.out.println("Erro : na listaParametros");
+               System.out.println("Erro : na listaParametros"+ " Linha: "  + currentToken.getLine());
                return false;
            }
        }
        
-       System.out.println("Erro listaIdentificadoes em listaParametros");
+       System.out.println("Erro listaIdentificadoes em listaParametros"+ " Linha: "  + currentToken.getLine());
        return false;
        
    }
@@ -571,15 +576,15 @@ public class Syntax {
                     if(tipo()){
                         return listaParametros_();
                     }else{
-                        System.out.println("Erro tipo na listaParametros_");
+                        System.out.println("Erro tipo na listaParametros_"+ " Linha: "  + currentToken.getLine());
                         return false;
                     }
                 }else{
-                    System.out.println("Erro : na listaParametros_");
+                    System.out.println("Erro : na listaParametros_"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Erro listaIdentificador em listaParametros_");
+                System.out.println("Erro listaIdentificador em listaParametros_"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
        }
@@ -595,7 +600,7 @@ public class Syntax {
                nextToken();
                return true;
             }else{
-                System.out.println("Deu pau! esperando end");
+                System.out.println("Deu pau! esperando end"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else{
@@ -629,7 +634,7 @@ public class Syntax {
                 if(listaComandos_()){
                     return true;
                 }else{
-                    System.out.println("Erro listaComandos_ em listaComandos_");
+                    System.out.println("Erro listaComandos_ em listaComandos_"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
         }
@@ -645,14 +650,14 @@ public class Syntax {
                     checkAttribution();
                     return true;
                 }else{
-                    System.out.println("Erro na expressão em comando");
+                    System.out.println("Erro na expressão em comando"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else if(ativacaoProcedimento()){
                 
                 return true;
             }else{
-                System.out.println("Erro na atribuição em comando");
+                System.out.println("Erro na atribuição em comando"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else if(currentToken.getToken().equals("if")){
@@ -667,19 +672,19 @@ public class Syntax {
                             nextToken();
                             return true;
                         }else{
-                            System.out.println("Erro no else em comando");
+                            System.out.println("Erro no else em comando"+ " Linha: "  + currentToken.getLine());
                             return false;
                         }
                     }else{
-                        System.out.println("Erro comando em comando");
+                        System.out.println("Erro comando em comando"+ " Linha: "  + currentToken.getLine());
                         return false;
                     }
                 }else{
-                    System.out.println("Erro then em comando");
+                    System.out.println("Erro then em comando"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Erro expressao if em comando");
+                System.out.println("Erro expressao if em comando"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else if(currentToken.getToken().equals("while")){
@@ -692,15 +697,15 @@ public class Syntax {
                     if(comando()){
                         return true;
                     }else{
-                        System.out.println("Erro comando while em comando");
+                        System.out.println("Erro comando while em comando"+ " Linha: "  + currentToken.getLine());
                         return false;
                     }
                 }else{
-                    System.out.println("Erro do em comando");
+                    System.out.println("Erro do em comando"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Erro expressao while em comando");
+                System.out.println("Erro expressao while em comando"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else if(currentToken.getToken().equals("do")){
@@ -713,15 +718,15 @@ public class Syntax {
                         checkConditional();
                         return true;
                     }else{
-                        System.out.println("Esperando expressao");
+                        System.out.println("Esperando expressao"+ " Linha: "  + currentToken.getLine());
                         return false;
                     }
                 }else{
-                    System.out.println("Esperando while");
+                    System.out.println("Esperando while"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Esperando comando");
+                System.out.println("Esperando comando"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }
@@ -779,11 +784,12 @@ public class Syntax {
                     nextToken();
                     return true;
                 }else{
-                    System.out.println("Esperando ) em ativacao procedimento");
+                    System.out.println("Esperando ) em ativacao procedimento"+ " Linha: "  + currentToken.getLine());
+                    System.exit(0);
                     return false;
                 }
             }else{
-                System.out.println("Esperando listaExpressoes em ativacaoProcedimento");
+                System.out.println("Esperando listaExpressoes em ativacaoProcedimento"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else{
@@ -817,7 +823,7 @@ public class Syntax {
             }
         }
         else{
-            System.out.println("Deu pau na lista de expressoes");
+            System.out.println("Deu pau na lista de expressoes"+ " Linha: "  + currentToken.getLine());
             return false;
         }
         return true;
@@ -845,11 +851,11 @@ public class Syntax {
                 if(expressaoSimples_()){
                     return true;
                 }else{
-                    System.out.println("deu erro em expressaoSimples_() esperando expressaoSimples_()");
+                    System.out.println("deu erro em expressaoSimples_() esperando expressaoSimples_()"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Esperando termo em expressaoSimples_()");
+                System.out.println("Esperando termo em expressaoSimples_()"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else{
@@ -862,7 +868,7 @@ public class Syntax {
             if(expressaoSimples_()){
                 return true;
             }else{
-                System.out.println("Esperando expressaoSimples_() em expressaoSimples()");
+                System.out.println("Esperando expressaoSimples_() em expressaoSimples()"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else if(sinal()){
@@ -870,11 +876,11 @@ public class Syntax {
                 if(expressaoSimples_()){
                     return true;
                 }else{
-                    System.out.println("Deu erro em expressao simples, esperando expressaoSimples_");
+                    System.out.println("Deu erro em expressao simples, esperando expressaoSimples_"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Deu erro esperando termo em expressaoSimples()");
+                System.out.println("Deu erro esperando termo em expressaoSimples()"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else{
@@ -891,11 +897,11 @@ public class Syntax {
                 if(termo_()){
                     return true;
                 }else{
-                    System.out.println("Deu erro, esperando termo_()");
+                    System.out.println("Deu erro, esperando termo_()"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Deu erro, esperando fator em termo_()");
+                System.out.println("Deu erro, esperando fator em termo_()"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else{
@@ -949,11 +955,11 @@ public class Syntax {
                         nextToken();
                         return true;
                     }else{
-                        System.out.println("Deu erro em fator! Esperando )");
+                        System.out.println("Deu erro em fator! Esperando )"+ " Linha: "  + currentToken.getLine());
                         return false;
                     }
                 }else{
-                    System.out.println("Deu pau! Esperando lista de expressoes em fator");
+                    System.out.println("Deu pau! Esperando lista de expressoes em fator"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
@@ -966,7 +972,7 @@ public class Syntax {
                 nextToken();
                 return true;
             }else{
-                System.out.println("Deu erro depois do not. Esperando fator");
+                System.out.println("Deu erro depois do not. Esperando fator"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
         }else if(currentToken.getToken().equals("(")){
@@ -976,11 +982,11 @@ public class Syntax {
                     nextToken();
                     return true;
                 }else{
-                    System.out.println("Esperando ) depois da expressao");
+                    System.out.println("Esperando ) depois da expressao"+ " Linha: "  + currentToken.getLine());
                     return false;
                 }
             }else{
-                System.out.println("Esperando expressao");
+                System.out.println("Esperando expressao"+ " Linha: "  + currentToken.getLine());
                 return false;
             }
 
@@ -996,7 +1002,7 @@ public class Syntax {
              return true;
          }
          else{
-             System.out.println("Deu pau! esperando sinal + ou -");
+             System.out.println("Deu pau! esperando sinal + ou -"+ " Linha: "  + currentToken.getLine());
              return false;
          }
     }
