@@ -6,13 +6,13 @@ var a, b: integer;
     procedure p (x:integer;u:real;zi:boolean);
     var b, c : integer;
     begin
-        while( (c<9) and (c=2) ) do c:=2;
+        while( (c<9) and true ) do c:=2;
         i:= 10.1 + 10.1 + a;
         b:=x + c
 
     end;
 
-    procedure p;
+    procedure op;
     var c,d: integer;
     
         procedure r (y:integer;z:integer);
@@ -24,6 +24,6 @@ var a, b: integer;
         c:=4
     end;
 begin
-    p( 1 , 1 , true);
+    p( 1 , 1.0 , true);
     a:=b
 end.

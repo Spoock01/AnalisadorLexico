@@ -7,23 +7,18 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 public class MyFileReader {
-    private String pathFile;
-    private String pathReservedWords;
-    private String pathArithmeticTable;
-    private ArrayList<String> arrayLine;
-    private ArrayList<String> reservedWords;
-    private ArithmeticTable table;
+    private final String pathFile;
+    private final String pathReservedWords;
+    private final String pathArithmeticTable;
+    private final ArrayList<String> arrayLine;
+    private final ArrayList<String> reservedWords;
 
     public MyFileReader(String path, String pathReservedWords, String pathArithmeticTable) {
         this.pathFile = path;
         this.pathReservedWords = pathReservedWords;
         this.pathArithmeticTable = pathArithmeticTable;
-        this.table = new ArithmeticTable();
         this.arrayLine = new ArrayList<>();
         this.reservedWords = new ArrayList<>();
     }
@@ -38,7 +33,7 @@ public class MyFileReader {
     public Boolean openFile(){
         
         String str;
-        File file = new File(this.pathFile.toString()); 
+        File file = new File(this.pathFile); 
         BufferedReader br = null;
         
         // Lendo arquivo do código em pascal
@@ -77,40 +72,18 @@ public class MyFileReader {
             return false;
         }
         
-        file = new File(this.pathArithmeticTable.toString()); 
+        file = new File(this.pathArithmeticTable); 
         
         try {
             br = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException ex) {
             System.out.println("Arquivo de combinações aritméticas não encontrado!\n");
             return false;
-        }        
-        
-        try {
-            while ((str = br.readLine()) != null){
-                str = str.replace('/', Character.MIN_VALUE);
-                
-                try{
-                    String[] tokens; 
-                    tokens = str.split(" ");
-                    ArithIndex ai = new ArithIndex(tokens[0], tokens[1]);
-                    table.add(ai);
-                }catch(Exception e){
-                    System.out.println("Erro ao dar split");
-                }
-            }
-                
-        } catch (IOException ex) {
-            System.out.println("Erro durante a leitura do arquivo de palavras reservadas!\n");
-            return false;
-        }
+        }             
         
         return true;
     }
     
-    public ArithmeticTable getArithmeticTable(){
-        return this.table;
-    }
     
     public ArrayList<String> getFile (){
         return this.arrayLine;

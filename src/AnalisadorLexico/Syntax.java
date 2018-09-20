@@ -1,28 +1,25 @@
 package AnalisadorLexico;
 
 import java.util.ArrayList;
-import jdk.nashorn.internal.ir.IdentNode;
 
 
 public class Syntax {
    private final ArrayList<Table> tokens;
-   private final ArithmeticTable arithmeticTable;
    private Table currentToken;
    private int nextTokenIndex;
    private final boolean showTokens = false;
-   private ArrayList<IdentifierType> symbolTable;
-   private ArrayList<IdentifierType> symbolTableProcedure;
-   private ArrayList<IdentifierType> variableDeclaration; //Para poder atribuir os tipos a ele na hora da declaração
-   private ArrayList<IdentifierType> stackAttribution;
+   private final ArrayList<IdentifierType> symbolTable;
+   private final ArrayList<IdentifierType> symbolTableProcedure;
+   private final ArrayList<IdentifierType> variableDeclaration; //Para poder atribuir os tipos a ele na hora da declaração
+   private final ArrayList<IdentifierType> stackAttribution;
    private ArrayList<IdentifierType> pList;
    private String opArithmetic;
-   private ArrayList<ParameterType> pType;
+   private final ArrayList<ParameterType> pType;
    private int indexPType = 0;
    
-    public Syntax(ArrayList<Table> tokens, ArithmeticTable arithmeticTable){
+    public Syntax(ArrayList<Table> tokens){
         this.tokens = tokens;
         this.nextTokenIndex = 0;
-        this.arithmeticTable = arithmeticTable;
         symbolTable = new ArrayList<>();
         symbolTableProcedure = new ArrayList<>();
         variableDeclaration = new ArrayList<>();
@@ -34,9 +31,9 @@ public class Syntax {
     
     void printVariableDeclaration(){
         
-        for(IdentifierType it : variableDeclaration){
+        variableDeclaration.forEach((it) -> {
             System.out.println(it.getIdentifier() + it.getType());
-        }
+       });
         System.out.println("\n\n");
         
         
